@@ -7,6 +7,7 @@ use CodeIgniter\Model;
 class NewsModel extends Model
 {
     protected $table = 'news';
+    protected $protectFields = false;
 
     /**
      * @param false|string $slug
