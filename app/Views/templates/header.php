@@ -10,3 +10,9 @@
 
 </head>
 <body>
+<?= $this->renderSection('content'); ?>
+
+
+
+<?= $this->renderSection('footerContend') ?>
+<p>teste</p>

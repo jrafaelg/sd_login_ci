@@ -13,9 +13,11 @@ class Login extends BaseController
             'title'     => 'Login Page',
         ];
 
-        return view('templates/header', $data)
-            . view('login/index')
-            . view('templates/footer');
+        return  view('login/index', $data);
+
+//        return view('templates/header', $data)
+//            . view('login/index')
+//            . view('templates/footer');
     }
 
     public function auth(){
