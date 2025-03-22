@@ -5,15 +5,27 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 
+
+
 class Login extends BaseController
 {
+
     public function index()
     {
         $data = [
             'title'     => 'Login Page',
         ];
 
-        return  view('login/index', $data);
+        $view = \Config\Services::renderer();
+
+        //$view->setVar('data', $data);
+
+        return view('login/index', $data);
+
+
+        //return  $view->render('login/index', $data);
+
+        //return $this->_render($this->config->views['login'], ['config' => $this->config]);
 
 //        return view('templates/header', $data)
 //            . view('login/index')

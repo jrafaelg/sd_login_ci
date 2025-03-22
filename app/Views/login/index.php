@@ -1,4 +1,4 @@
-<?= $this->extend('\templates\header') ?>
+<?= $this->extend('templates\header', $title ?? '') ?>
 
 <?= $this->section('content') ?>
 
