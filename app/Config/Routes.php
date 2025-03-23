@@ -6,16 +6,16 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-service('auth')->routes($routes);
+//service('auth')->routes($routes);
 
 $routes->get('/', 'Home::index');
 
-//use App\Controllers\Login;
+use App\Controllers\Login;
 use App\Controllers\News;
 use App\Controllers\Pages;
 
-//$routes->get('login', [Login::class, 'index']);
-//$routes->post('login', [Login::class, 'auth']);
+$routes->get('login', [Login::class, 'index']);
+$routes->post('login', [Login::class, 'auth']);
 
 //$routes->get('login', 'AuthController\Login::login', ['as' => 'login']);
 
@@ -24,5 +24,16 @@ $routes->get('news/new', [News::class, 'new']);
 $routes->post('news', [News::class, 'create'], ['filter' => 'session']);
 $routes->get('news/(:segment)', [News::class, 'show']);
 
-$routes->get('pages', [Pages::class, 'index']);
-$routes->get('(:segment)', [Pages::class, 'view']);
+//$routes->get('pages', [Pages::class, 'index']);
+//$routes->get('(:segment)', [Pages::class, 'view']);
+
+//var_dump($routes);
+//exit;
+
+// Would execute the show404 method of the App\Errors class
+// Will display a custom view.
+$routes->set404Override(static function () {
+    // If you want to get the URI segments.
+    $segments = request()->getUri()->getSegments();
+    return view('errors/html/error_404', ['message' => $segments]);
+});

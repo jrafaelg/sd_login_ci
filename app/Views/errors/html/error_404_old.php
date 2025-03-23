@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -46,8 +46,9 @@
         }
 
         pre {
-            white-space: normal;
+            /* white-space: normal; */
             margin-top: 1.5rem;
+            text-align: left;
         }
 
         code {
@@ -78,30 +79,18 @@
     </style>
 </head>
 
-<body> -->
-<?= $this->render('templates\header') ?: 'Fallback title'  ?>
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-10 col-md-8">
-            <div class="card-body p-3 p-md-4 p-xl-5">
-                <h1 class="text-center">404</h1>
+<body>
+    <div class="wrap">
+        <h1 class="text-center">404</h1>
 
-                <p class="text-center mt-5">
-                    <?php if (ENVIRONMENT !== 'production') : ?>
-                        <?php var_dump($message ?? 'Not Found') ?>
-                    <?php else : ?>
-                        <?= lang('Errors.sorryCannotFind') ?>
-                    <?php endif; ?>
-                </p>
-            </div>
-        </div>
+        <p class="text-center mt-5">
+            <?php if (ENVIRONMENT !== 'production') : ?>
+                <?php var_dump($message ?? 'Not Found') ?>
+            <?php else : ?>
+                <?= lang('Errors.sorryCannotFind') ?>
+            <?php endif; ?>
+        </p>
     </div>
-</div>
-<div class="wrap">
+</body>
 
-</div>
-
-<?= $this->render('templates\footer') ?: 'Fallback title'  ?>
-<!-- </body>
-
-</html> -->
+</html>

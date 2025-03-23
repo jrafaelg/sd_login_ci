@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use CodeIgniter\Exceptions\PageNotFoundException;
+
 class Pages extends BaseController
 {
     public function index()
@@ -22,6 +24,4 @@ class Pages extends BaseController
             . view('pages/' . $page)
             . view('templates/footer');
     }
-
-
 }

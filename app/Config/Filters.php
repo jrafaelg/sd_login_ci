@@ -84,13 +84,23 @@ class Filters extends BaseFilters
             // 'invalidchars',
             'session' => [
                 'except' => [
-                    'login*', 'register', 'auth/a/*', 'logout', 'home', 'news' //,'*',
+                    'login*',
+                    'register',
+                    'auth/a/*',
+                    'logout',
+                    'home',
+                    'news',
+                    //'*',
                     //['except' => ['/','about','class','registerstudents']],
                 ]
             ],
-            'force-reset'=>[
+            'force-reset' => [
                 'except' => [
-                    'login*', 'register', 'auth/a/*', 'logout', 'change-password'
+                    'login*',
+                    'register',
+                    'auth/a/*',
+                    'logout',
+                    'change-password'
                 ]
             ]
         ],
@@ -129,7 +139,9 @@ class Filters extends BaseFilters
     public array $filters = [
         'auth-rates' => [
             'before' => [
-                'login*', 'register', 'auth/*'
+                'login*',
+                'register',
+                'auth/*'
             ]
 
         ]

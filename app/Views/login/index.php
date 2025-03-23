@@ -1,4 +1,4 @@
-<?= $this->extend('templates\header', $title ?? '') ?>
+<?= $this->extend('templates\main') ?>
 
 <?= $this->section('content') ?>
 
@@ -24,8 +24,8 @@
                         <div class="col-12">
                             <div class="form-floating mb-3">
                                 <input type="text" name="username" id="username" placeholder="Username"
-                                       class="form-control <?php echo !empty($username_err) ? 'is-invalid' : ''; ?>"
-                                       value="<?php echo $username ?? ''; ?>" required>
+                                    class="form-control <?php echo !empty($username_err) ? 'is-invalid' : ''; ?>"
+                                    value="<?php echo $username ?? ''; ?>" required>
                                 <label for="username" class="form-label">Username</label>
                                 <span class="invalid-feedback"><?php echo $username_err ?? ''; ?></span>
                             </div>
@@ -33,8 +33,8 @@
                         <div class="col-12">
                             <div class="form-floating mb-3">
                                 <input type="password" name="password" id="password" placeholder="Password"
-                                       class="form-control <?php echo !empty($password_err) ? 'is-invalid' : ''; ?>"
-                                       value="<?php echo $password ?? ''; ?>" required>
+                                    class="form-control <?php echo !empty($password_err) ? 'is-invalid' : ''; ?>"
+                                    value="<?php echo $password ?? ''; ?>" required>
                                 <span class="invalid-feedback"><?php echo $password_err ?? ''; ?></span>
                                 <label for="password" class="form-label">Password</label>
                             </div>
@@ -47,7 +47,7 @@
                         </div>
                         <div class="col-12">
                             <p class="m-0 text-secondary text-center">
-                                Don't have an account? <a href="register.php" class="link-primary text-decoration-none">Click here</a>
+                                Don't have an account? <a href="register" class="link-primary text-decoration-none">Click here</a>
                             </p>
                         </div>
                     </div>
