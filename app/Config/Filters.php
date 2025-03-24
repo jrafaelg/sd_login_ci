@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\Auth;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -13,10 +14,10 @@ use CodeIgniter\Filters\PageCache;
 use CodeIgniter\Filters\PerformanceMetrics;
 use CodeIgniter\Filters\SecureHeaders;
 // shield
-use CodeIgniter\Shield\Filters\AuthRates;
-use CodeIgniter\Shield\Filters\GroupFilter;
-use CodeIgniter\Shield\Filters\PermissionFilter;
-use CodeIgniter\Shield\Filters\SessionAuth;
+// use CodeIgniter\Shield\Filters\AuthRates;
+// use CodeIgniter\Shield\Filters\GroupFilter;
+// use CodeIgniter\Shield\Filters\PermissionFilter;
+// use CodeIgniter\Shield\Filters\SessionAuth;
 
 class Filters extends BaseFilters
 {
@@ -39,11 +40,13 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'auth'          => Auth::class,
+
         // shield
-        'session'     => SessionAuth::class,
-        'auth-rates'  => AuthRates::class,
-        'group'       => GroupFilter::class,
-        'permission'  => PermissionFilter::class,
+        // 'session'     => SessionAuth::class,
+        // 'auth-rates'  => AuthRates::class,
+        // 'group'       => GroupFilter::class,
+        // 'permission'  => PermissionFilter::class,
     ];
 
     /**
@@ -79,34 +82,34 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
-            'session' => [
-                'except' => [
-                    'login*',
-                    'register',
-                    'auth/a/*',
-                    'logout',
-                    'home',
-                    'news',
-                    //'*',
-                    //['except' => ['/','about','class','registerstudents']],
-                ]
-            ],
-            'force-reset' => [
-                'except' => [
-                    'login*',
-                    'register',
-                    'auth/a/*',
-                    'logout',
-                    'change-password'
-                ]
-            ]
+            'honeypot',
+            'csrf',
+            'invalidchars',
+            // 'session' => [
+            //     'except' => [
+            //         'login*',
+            //         'register',
+            //         'auth/a/*',
+            //         'logout',
+            //         'home',
+            //         'news',
+            //         //'*',
+            //         //['except' => ['/','about','class','registerstudents']],
+            //     ]
+            // ],
+            // 'force-reset' => [
+            //     'except' => [
+            //         'login*',
+            //         'register',
+            //         'auth/a/*',
+            //         'logout',
+            //         'change-password'
+            //     ]
+            // ]
         ],
         'after' => [
-            // 'honeypot',
-            // 'secureheaders',
+            'honeypot',
+            'secureheaders',
         ],
     ];
 
@@ -137,13 +140,13 @@ class Filters extends BaseFilters
      * @var array<string, array<string, list<string>>>
      */
     public array $filters = [
-        'auth-rates' => [
-            'before' => [
-                'login*',
-                'register',
-                'auth/*'
-            ]
+        // 'auth-rates' => [
+        //     'before' => [
+        //         'login*',
+        //         'register',
+        //         'auth/*'
+        //     ]
 
-        ]
+        // ]
     ];
 }

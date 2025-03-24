@@ -20,3 +20,5 @@
     <p>Unable to find any news for you.</p>
 
 <?php endif ?>
+
+<a href="<?= url_to('logout') ?>">Sair</a>

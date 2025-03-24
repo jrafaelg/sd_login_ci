@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 
@@ -27,24 +28,59 @@ class Login extends BaseController
 
         //return $this->_render($this->config->views['login'], ['config' => $this->config]);
 
-//        return view('templates/header', $data)
-//            . view('login/index')
-//            . view('templates/footer');
+        //        return view('templates/header', $data)
+        //            . view('login/index')
+        //            . view('templates/footer');
     }
 
-    public function auth(){
+    public function auth()
+    {
 
+        $validated = $this->validate(
+            [
+                'username' => 'required',
+                'password' => 'required'
+            ],
+            [
+                'username' => [
+                    'required' => 'Nome de usuário é requerido'
+                ],
+                'password' => [
+                    'required' => 'Password é requerido'
+                ]
+            ]
+        );
 
-        helper('form');
+        if (!$validated) {
 
-        $data = $this->request->getPost(['username', 'password']);
+            return redirect()->route('login')->with('errors', $this->validator->getErrors());
+            //return redirect()->back()->withInput();
+        }
 
-        var_dump($data);
-        exit;
+        //$user = new \App\Models\UserModel();
+        $user = new UserModel();
+        $userFound = $user->where('username', $this->request->getPost('username'))->first();
 
+        if (!$userFound) {
+            return redirect()->route('login')->with('message', 'Usuário ou senha inválidos');
+        }
 
-        return  view('templates/footer');
+        if (!password_verify($this->request->getPost('password'), $userFound->password)) {
+            return redirect()->route('login')->with('message', 'Usuário ou senha inválidos');
+        }
+
+        unset($userFound->password);
+        session()->set('user', $userFound);
+
+        return redirect()->route('news');
+
+        // var_dump(!password_verify($this->request->getPost('password'), $userFound->password));
+        // exit;
     }
 
-
+    public function logout()
+    {
+        session()->destroy();
+        return redirect()->route('login');
+    }
 }

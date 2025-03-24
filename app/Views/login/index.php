@@ -12,31 +12,29 @@
                     <p class="text-secondary">Please fill this form to login.</p>
                 </div>
 
-                <?php
-                if (!empty($login_err)) {
-                    echo '<div class="alert alert-danger">' . $login_err . '</div>';
-                }
-                ?>
+                <?php if (session()->has('message')) : ?>
+                    <div class="alert alert-danger text-center"><?= session()->getFlashdata('message') ?></div>
+                <?php endif ?>
 
-                <form action="/login" method="post">
+                <form action="<?= url_to('login') ?>" method="post">
                     <?= csrf_field() ?>
                     <div class="row gy-2 overflow-hidden">
                         <div class="col-12">
                             <div class="form-floating mb-3">
                                 <input type="text" name="username" id="username" placeholder="Username"
-                                    class="form-control <?php echo !empty($username_err) ? 'is-invalid' : ''; ?>"
-                                    value="<?php echo $username ?? ''; ?>" required>
+                                    class="form-control <?php echo !empty(session()->getFlashdata('errors')['username']) ? 'is-invalid' : ''; ?>"
+                                    value="<?php echo $username ?? ''; ?>">
                                 <label for="username" class="form-label">Username</label>
-                                <span class="invalid-feedback"><?php echo $username_err ?? ''; ?></span>
+                                <span class="invalid-feedback"><?= session()->getFlashdata('errors')['username'] ?? '' ?></span>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-floating mb-3">
                                 <input type="password" name="password" id="password" placeholder="Password"
-                                    class="form-control <?php echo !empty($password_err) ? 'is-invalid' : ''; ?>"
-                                    value="<?php echo $password ?? ''; ?>" required>
-                                <span class="invalid-feedback"><?php echo $password_err ?? ''; ?></span>
+                                    class="form-control <?php echo !empty(session()->getFlashdata('errors')['password']) ? 'is-invalid' : ''; ?>"
+                                    value="<?php echo $password ?? ''; ?>">
                                 <label for="password" class="form-label">Password</label>
+                                <span class="invalid-feedback"> <?= session()->getFlashdata('errors')['password'] ?? '' ?></span>
                             </div>
                         </div>
 
