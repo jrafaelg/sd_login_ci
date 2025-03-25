@@ -11,6 +11,11 @@ use CodeIgniter\HTTP\ResponseInterface;
 class Login extends BaseController
 {
 
+    public function __construct()
+    {
+        helper('form');
+    }
+
     public function index()
     {
         $data = [
@@ -33,6 +38,63 @@ class Login extends BaseController
         //            . view('templates/footer');
     }
 
+    public function register()
+    {
+        $data = [
+            'title'     => 'Register Page',
+        ];
+        return view('login/register', $data);
+    }
+
+    public function store()
+    {
+
+        $validated = $this->validate(
+            [
+                'username' => 'required',
+                'password' => 'required|PasswordIsValid',
+                'password_confirm' => 'required|matches[password]',
+                'password_sign' => 'required|min_length[6]',
+                'password_sign_confirm' => 'required|matches[password_sign]'
+            ],
+            [
+                'username' => [
+                    'required' => 'Nome de usuário é requerido'
+                ],
+                'password' => [
+                    'required' => 'Password é requerido'
+                ],
+                'password_confirm' => [
+                    'required' => 'Confirmação de password é requerido',
+                    'matches' => 'Confirmação de password não confere'
+                ],
+                'password_sign' => [
+                    'required' => 'Senha de assinatura é requerido',
+                    'min_length' => 'Senha de assinatura deve ter no mínimo 6 caracteres'
+                ],
+                'password_sign_confirm' => [
+                    'required' => 'Confirmação de senha de assinatura é requerido',
+                    'matches' => 'Confirmação de senha de assinatura não confere',
+                ],
+            ]
+        );
+
+
+
+        if (!$validated) {
+            //return redirect()->back()->withInput();
+            return redirect()->route('login/register')->with('errors', $this->validator->getErrors())->withInput();
+        }
+
+        $user = new UserModel();
+        $user->insert([
+            'username' => $this->request->getPost('username'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT)
+        ]);
+
+        return redirect()->route('login');
+    }
+
     public function auth()
     {
 
@@ -53,9 +115,11 @@ class Login extends BaseController
 
         if (!$validated) {
 
-            return redirect()->route('login')->with('errors', $this->validator->getErrors());
+            return redirect()->route('login')->with('errors', $this->validator->getErrors())->withInput();
             //return redirect()->back()->withInput();
         }
+
+        //dd($this->request->getPost());
 
         //$user = new \App\Models\UserModel();
         $user = new UserModel();
@@ -71,6 +135,8 @@ class Login extends BaseController
 
         unset($userFound->password);
         session()->set('user', $userFound);
+
+        //dd($userFound);
 
         return redirect()->route('news');
 

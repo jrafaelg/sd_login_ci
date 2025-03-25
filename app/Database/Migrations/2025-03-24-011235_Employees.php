@@ -3,6 +3,7 @@
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
+use CodeIgniter\Database\RawSql;
 
 class Employees extends Migration
 {
@@ -46,6 +47,19 @@ class Employees extends Migration
             'digital_sign' => [
                 'type' => 'TEXT',
                 'null' => false,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+                'default' => new RawSql('CURRENT_TIMESTAMP'),
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
             ],
         ]);
         $this->forge->addPrimaryKey('id', true);

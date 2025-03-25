@@ -48,6 +48,14 @@ class Users extends Migration
                 'null' => false,
                 'default' => new RawSql('CURRENT_TIMESTAMP'),
             ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
         ]);
         $this->forge->addPrimaryKey('id', true);
         $this->forge->createTable($this->tableName, true);

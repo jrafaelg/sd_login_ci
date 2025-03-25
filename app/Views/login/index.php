@@ -16,6 +16,7 @@
                     <div class="alert alert-danger text-center"><?= session()->getFlashdata('message') ?></div>
                 <?php endif ?>
 
+
                 <form action="<?= url_to('login') ?>" method="post">
                     <?= csrf_field() ?>
                     <div class="row gy-2 overflow-hidden">
@@ -23,7 +24,7 @@
                             <div class="form-floating mb-3">
                                 <input type="text" name="username" id="username" placeholder="Username"
                                     class="form-control <?php echo !empty(session()->getFlashdata('errors')['username']) ? 'is-invalid' : ''; ?>"
-                                    value="<?php echo $username ?? ''; ?>">
+                                    value="<?= set_value('username') ?? ''; ?>">
                                 <label for="username" class="form-label">Username</label>
                                 <span class="invalid-feedback"><?= session()->getFlashdata('errors')['username'] ?? '' ?></span>
                             </div>
@@ -32,7 +33,7 @@
                             <div class="form-floating mb-3">
                                 <input type="password" name="password" id="password" placeholder="Password"
                                     class="form-control <?php echo !empty(session()->getFlashdata('errors')['password']) ? 'is-invalid' : ''; ?>"
-                                    value="<?php echo $password ?? ''; ?>">
+                                    value="<?= set_value('password') ?? ''; ?>">
                                 <label for="password" class="form-label">Password</label>
                                 <span class="invalid-feedback"> <?= session()->getFlashdata('errors')['password'] ?? '' ?></span>
                             </div>
@@ -45,12 +46,11 @@
                         </div>
                         <div class="col-12">
                             <p class="m-0 text-secondary text-center">
-                                Don't have an account? <a href="register" class="link-primary text-decoration-none">Click here</a>
+                                Don't have an account? <a href="<?= url_to('Login::register') ?>" class="link-primary text-decoration-none">Click here</a>
                             </p>
                         </div>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>

@@ -133,8 +133,10 @@ class App extends BaseConfig
      *
      * @see https://www.php.net/manual/en/timezones.php for list of timezones
      *      supported by PHP.
+     * date_default_timezone_set('America/Sao_Paulo');
      */
-    public string $appTimezone = 'UTC';
+    //public string $appTimezone = 'UTC';
+    public string $appTimezone = 'America/Sao_Paulo';
 
     /**
      * --------------------------------------------------------------------------

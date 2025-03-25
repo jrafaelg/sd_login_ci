@@ -17,8 +17,9 @@ use App\Controllers\Pages;
 
 $routes->get('login', [Login::class, 'index'], ['as' => 'login']);
 $routes->post('login', [Login::class, 'auth']);
+$routes->get('login/register', [Login::class, 'register']);
+$routes->post('login/register', [Login::class, 'store']);
 $routes->get('login/logout', [Login::class, 'logout'], ['as' => 'logout']);
-
 
 //$routes->get('login', 'AuthController\Login::login', ['as' => 'login']);
 
