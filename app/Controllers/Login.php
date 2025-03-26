@@ -138,10 +138,15 @@ class Login extends BaseController
 
         //dd($userFound);
 
-        return redirect()->route('news');
+        $info = [
+            'id'         => $userFound->id,
+            'username'   => $userFound->username,
+            'ip_address' => $this->request->getIPAddress(),
+        ];
 
-        // var_dump(!password_verify($this->request->getPost('password'), $userFound->password));
-        // exit;
+        log_message('info', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
+
+        return redirect()->route('news');
     }
 
     public function logout()
