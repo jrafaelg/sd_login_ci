@@ -92,8 +92,28 @@ class Login extends BaseController
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT)
         ]);
 
-        return redirect()->route('login');
+        session()->set('userId', $$user->getInsertID());
+
+        dd($user);
+
+        return redirect()->route('login/registerotp');
     }
+
+    public function registerOtp()
+    {
+        $data = [
+            'title'     => 'Register Page',
+        ];
+
+        if (!session()->has('userId')) {
+
+            return redirect()->route('login/register');
+        }
+
+        return view('login/sotreotp', $data);
+    }
+
+
 
     public function auth()
     {
@@ -126,11 +146,11 @@ class Login extends BaseController
         $userFound = $user->where('username', $this->request->getPost('username'))->first();
 
         if (!$userFound) {
-            return redirect()->route('login')->with('message', 'Usuário ou senha inválidos');
+            return redirect()->route('login')->with('message', 'Usuário ou senha inválidos')->withInput();
         }
 
         if (!password_verify($this->request->getPost('password'), $userFound->password)) {
-            return redirect()->route('login')->with('message', 'Usuário ou senha inválidos');
+            return redirect()->route('login')->with('message', 'Usuário ou senha inválidos')->withInput();
         }
 
         unset($userFound->password);

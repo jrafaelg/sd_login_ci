@@ -16,6 +16,11 @@
                     <div class="alert alert-danger text-center"><?= session()->getFlashdata('message') ?></div>
                 <?php endif ?>
 
+                <?php if (session()->has('error')) : ?>
+                    <div class="alert alert-danger small">
+                        <?= session()->getFlashdata('error') ?>
+                    </div>
+                <?php endif ?>
 
                 <form action="<?= url_to('login') ?>" method="post">
                     <?= csrf_field() ?>
