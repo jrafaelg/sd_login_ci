@@ -11,16 +11,6 @@
                     <p class="text-secondary">Please fill this form to create an account.</p>
                 </div>
 
-                <?php if (session()->has('message')) : ?>
-                    <div class="alert alert-danger text-center"><?= session()->getFlashdata('message') ?></div>
-                <?php endif ?>
-
-                <?php if (session()->has('errors')) : ?>
-                    <div class="alert alert-danger small">
-                        <?= validation_list_errors() ?>
-                    </div>
-                <?php endif ?>
-
                 <form action="<?= url_to('Login::register') ?>" method="post">
                     <?= csrf_field() ?>
                     <div class="row gy-2 overflow-hidden">

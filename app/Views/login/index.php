@@ -12,16 +12,6 @@
                     <p class="text-secondary">Please fill this form to login.</p>
                 </div>
 
-                <?php if (session()->has('message')) : ?>
-                    <div class="alert alert-danger text-center"><?= session()->getFlashdata('message') ?></div>
-                <?php endif ?>
-
-                <?php if (session()->has('error')) : ?>
-                    <div class="alert alert-danger small">
-                        <?= session()->getFlashdata('error') ?>
-                    </div>
-                <?php endif ?>
-
                 <form action="<?= url_to('login') ?>" method="post">
                     <?= csrf_field() ?>
                     <div class="row gy-2 overflow-hidden">
