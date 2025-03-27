@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\BackupcodesModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -51,7 +52,7 @@ class Login extends BaseController
 
         $validated = $this->validate(
             [
-                'username' => 'required',
+                'username' => 'required|is_unique[users.username]',
                 'password' => 'required|PasswordIsValid',
                 'password_confirm' => 'required|matches[password]',
                 'password_sign' => 'required|min_length[6]',
@@ -59,7 +60,8 @@ class Login extends BaseController
             ],
             [
                 'username' => [
-                    'required' => 'Nome de usuário é requerido'
+                    'required' => 'Nome de usuário é requerido',
+                    'is_unique' => 'Nome de usuário já existe'
                 ],
                 'password' => [
                     'required' => 'Password é requerido'
@@ -92,9 +94,9 @@ class Login extends BaseController
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT)
         ]);
 
-        session()->set('userId', $$user->getInsertID());
+        session()->set('userId', $user->getInsertID());
 
-        dd($user);
+        //dd($user);
 
         return redirect()->route('login/registerotp');
     }
@@ -107,10 +109,28 @@ class Login extends BaseController
 
         if (!session()->has('userId')) {
 
-            return redirect()->route('login/register');
+            return redirect()->route('login/register')->with('error', 'Ocorreu um erro ao criar o usuário');
         }
 
-        return view('login/sotreotp', $data);
+        // $sql = "SELECT otp_secret FROM users WHERE id = :id";
+
+        //$sql = "SELECT backup_code FROM backupcodes WHERE cod_user = :id AND used = 0";
+        //$backupCodes = new BackupcodesModel();
+        //$userFound = $backupCodes->where('cod_user', $this->request->getPost('username'))->first();
+
+        $db      = \Config\Database::connect();
+        $builder = $db->table('backupcodes');
+        $builder->select('backup_code');
+        $builder->where('cod_user', session()->get('userId'));
+        $builder->where('used', 0);
+        $query = $builder->get();
+
+        dd($query->getNumRows());
+
+        $array = ['cod_user' => session()->get('userId'), 'used' => 0];
+
+
+        return view('login/registerotp', $data);
     }
 
 
