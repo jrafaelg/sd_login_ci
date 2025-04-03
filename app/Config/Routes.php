@@ -22,7 +22,7 @@ $routes->get('login/register', [Login::class, 'register']);
 $routes->post('login/register', [Login::class, 'store']);
 $routes->get('login/registerotp', [Login::class, 'registerOtp']);
 $routes->post('login/registerotp', [Login::class, 'storeOtp']);
-$routes->get('login/checkotp', [Login::class, 'checkOtp']);
+$routes->get('login/checkotp', [Login::class, 'otp']);
 $routes->post('login/checkotp', [Login::class, 'checkOtp']);
 $routes->get('login/logout', [Login::class, 'logout'], ['as' => 'logout']);
 

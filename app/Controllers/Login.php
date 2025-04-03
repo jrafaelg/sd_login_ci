@@ -83,8 +83,6 @@ class Login extends BaseController
             ]
         );
 
-
-
         if (!$validated) {
             //return redirect()->back()->withInput();
             return redirect()->route('login/register')->with('errors', $this->validator->getErrors())->withInput();
@@ -156,9 +154,7 @@ class Login extends BaseController
         );
 
         if (!$validated) {
-
             return redirect()->route('login')->with('errors', $this->validator->getErrors())->withInput();
-            //return redirect()->back()->withInput();
         }
 
         //dd($this->request->getPost());
@@ -191,9 +187,17 @@ class Login extends BaseController
         return redirect()->to('login/checkotp');
     }
 
+    public function otp()
+    {
+        return $this->checkBackupCodes();
+        $data = [
+            'title'     => 'Check OTP Page',
+        ];
+        return view('login/checkotp', $data);
+    }
+
     public function checkOtp()
     {
-
         if (!session()->has('user')) {
             session()->destroy();
             return redirect()->route('login')->with('error', 'Ocorreu um erro ao logar')->withInput();
@@ -203,9 +207,9 @@ class Login extends BaseController
             'title'     => 'Register Page',
         ];
 
-        if ($this->request->getMethod() !== 'post') {
-            return view('login/checkotp', $data);
-        }
+        // if ($this->request->getMethod() !== 'post') {
+        //     return view('login/checkotp', $data);
+        // }
 
         $validated = $this->validate(
             [
@@ -220,36 +224,31 @@ class Login extends BaseController
             ]
         );
 
-        dd($validated);
-
         if (!$validated) {
-            return redirect()->route('login/checkopt')->with('errors', $this->validator->getErrors());
+            return redirect()->to('login/checkotp')->with('errors', $this->validator->getErrors())->withInput();
         }
 
         $otp_secret = session()->has('user') ? session()->get('user')->otp_secret : null;
         $otp_ts = session()->has('user') ? session()->get('user')->otp_ts : null;
-
-        dd($this->request->getPost('otp'));
+        $otp = $this->request->getPost('otp');
 
         $google2fa = new Google2FA();
 
-        //dd($this->request->getPost());
+        // metodo para garantir que cada código seja utilizado uma única vez
+        $timestamp = $google2fa->verifyKeyNewer($otp_secret, $otp, $otp_ts);
 
-
-
-        $user = new BackupcodesModel();
-        $userFound = $user->where('backup_code', $this->request->getPost('otp'))->first();
-
-        if (!$userFound) {
-            return redirect()->route('login/registerotp')->with('message', 'Código OTP inválido')->withInput();
+        // se for false, é pq o código é inválido
+        if ($timestamp === false) {
+            return redirect()->to('login/checkotp')->with('message', 'Código OTP inválido')->withInput();
         }
 
-        if ($userFound->used == 1) {
-            return redirect()->route('login/registerotp')->with('message', 'Código OTP já utilizado')->withInput();
-        }
+        $userModel = new UserModel();
 
-        $userFound->used = 1;
-        $user->save($userFound);
+        $data = [
+            'id'     => session()->get('user')->id,
+            'otp_ts' => $timestamp,
+        ];
+        $userModel->save($data);
 
         return redirect()->route('news');
     }
@@ -258,5 +257,40 @@ class Login extends BaseController
     {
         session()->destroy();
         return redirect()->route('login');
+    }
+
+    private function checkBackupCodes()
+    {
+
+        // $backupCodesModel = new BackupcodesModel();
+        // $backupCodes = $backupCodesModel
+        //     ->where('cod_user', session()->get('user')->id)
+        //     ->where('used', 0)
+        //     ->findAll();
+        // $total = $backupCodesModel->countAllResults();
+        // dd($backupCodesModel);
+
+        $db      = \Config\Database::connect();
+        $builder = $db->table('backupcodes');
+        $builder->select('backup_code');
+        $builder->where('cod_user', session()->get('user')->id);
+        $builder->where('used', 0);
+        $query = $builder->get();
+
+        dd($query->getNumRows());
+
+        if ($query->getNumRows() < 1) {
+            return false;
+        }
+
+        $backupCodes = $query->getResult();
+
+        dd($backupCodes);
+
+        $backupCodes = array_map(function ($code) {
+            return $code->backup_code;
+        }, $backupCodes);
+        $backupCodes = array_unique($backupCodes);
+        $backupCodes = array_values($backupCodes);
     }
 }
