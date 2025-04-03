@@ -37,6 +37,8 @@
     </div>
 <?php endif ?>
 
-<?= $this->renderSection('content'); ?>
+<div class="container" style="min-height: 90vh;">
+    <?= $this->renderSection('content'); ?>
+</div>
 
 <?= $this->render('templates\footer') ?: 'Fallback title'  ?>

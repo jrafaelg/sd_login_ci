@@ -57,6 +57,6 @@ Events::on('pre_system', static function (): void {
 Events::on(
     'DBQuery',
     static function (\CodeIgniter\Database\Query $query) {
-        log_message('info', 'SQL Query: ' . (string) $query);
+        log_message('debug', 'SQL Query: ' . (string) $query);
     },
 );

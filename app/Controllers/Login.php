@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 use App\Models\BackupcodesModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\Session;
+use PragmaRX\Google2FA\Google2FA;
 
 
 
@@ -185,6 +187,69 @@ class Login extends BaseController
         ];
 
         log_message('info', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
+
+        return redirect()->to('login/checkotp');
+    }
+
+    public function checkOtp()
+    {
+
+        if (!session()->has('user')) {
+            session()->destroy();
+            return redirect()->route('login')->with('error', 'Ocorreu um erro ao logar')->withInput();
+        }
+
+        $data = [
+            'title'     => 'Register Page',
+        ];
+
+        if ($this->request->getMethod() !== 'post') {
+            return view('login/checkotp', $data);
+        }
+
+        $validated = $this->validate(
+            [
+                'otp' => 'required|max_length[8]|min_length[6]'
+            ],
+            [
+                'otp' => [
+                    'required' => 'Código OTP é requerido',
+                    'max_length' => 'Código OTP deve ter entre 6 e 8 caracteres',
+                    'min_length' => 'Código OTP deve ter entre 6 e 8 caracteres'
+                ]
+            ]
+        );
+
+        dd($validated);
+
+        if (!$validated) {
+            return redirect()->route('login/checkopt')->with('errors', $this->validator->getErrors());
+        }
+
+        $otp_secret = session()->has('user') ? session()->get('user')->otp_secret : null;
+        $otp_ts = session()->has('user') ? session()->get('user')->otp_ts : null;
+
+        dd($this->request->getPost('otp'));
+
+        $google2fa = new Google2FA();
+
+        //dd($this->request->getPost());
+
+
+
+        $user = new BackupcodesModel();
+        $userFound = $user->where('backup_code', $this->request->getPost('otp'))->first();
+
+        if (!$userFound) {
+            return redirect()->route('login/registerotp')->with('message', 'Código OTP inválido')->withInput();
+        }
+
+        if ($userFound->used == 1) {
+            return redirect()->route('login/registerotp')->with('message', 'Código OTP já utilizado')->withInput();
+        }
+
+        $userFound->used = 1;
+        $user->save($userFound);
 
         return redirect()->route('news');
     }

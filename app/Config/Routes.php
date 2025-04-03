@@ -22,6 +22,8 @@ $routes->get('login/register', [Login::class, 'register']);
 $routes->post('login/register', [Login::class, 'store']);
 $routes->get('login/registerotp', [Login::class, 'registerOtp']);
 $routes->post('login/registerotp', [Login::class, 'storeOtp']);
+$routes->get('login/checkotp', [Login::class, 'checkOtp']);
+$routes->post('login/checkotp', [Login::class, 'checkOtp']);
 $routes->get('login/logout', [Login::class, 'logout'], ['as' => 'logout']);
 
 //$routes->get('login', 'AuthController\Login::login', ['as' => 'login']);
