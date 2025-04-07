@@ -35,7 +35,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('news/(:segment)', [News::class, 'show']);
     //employees
     $routes->get('employees', [Employees::class, 'index'], ['as' => 'employees']);
-    $routes->get('employees/(:segment)', [Employees::class, 'read']);
+    $routes->get('employees/(:segment)', [Employees::class, 'show']);
     $routes->get('employees/edit/(:segment)', [Employees::class, 'edit']);
     $routes->post('employees/update', [Employees::class, 'update']);
     $routes->get('employees/delete/(:segment)', [Employees::class, 'delete']);

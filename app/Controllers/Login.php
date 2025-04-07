@@ -210,9 +210,10 @@ class Login extends BaseController
             'ip_address' => $this->request->getIPAddress(),
 
         ];
-        log_message('notice', 'User created successfully. ID: {id} - username: {username} - IP: {ip_address}', $log_data);
-
         $data['backupCodes'] = objToArray($backupCodes);
+
+        // gravando o log de criação do usuário
+        log_message('info', 'User created successfully. ID: {id} - username: {username} - IP: {ip_address}', $log_data);
 
         return view('login/registerotp', $data);
     }
@@ -265,7 +266,7 @@ class Login extends BaseController
             'ip_address' => $this->request->getIPAddress(),
         ];
 
-        log_message('notice', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
+        log_message('info', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
 
         return redirect()->to('login/checkotp');
     }
