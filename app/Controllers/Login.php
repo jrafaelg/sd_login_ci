@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\BackupcodesModel;
 use App\Models\UserModel;
+use chillerlan\QRCode\QRCode;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Session;
 use PragmaRX\Google2FA\Google2FA;
@@ -88,13 +89,26 @@ class Login extends BaseController
             return redirect()->route('login/register')->with('errors', $this->validator->getErrors())->withInput();
         }
 
+        // instaciando o Google2FA
+        $google2fa = new Google2FA();
+
+        // gerando a chave secreta do OTP
+        $otp_secret = $google2fa->generateSecretKey();
+
+        // o timestamp é utilizado para garantir que cada código seja utilizado uma única vez
+        $otp_ts = $google2fa->getTimestamp();
+
+
         $user = new UserModel();
         $user->insert([
             'username' => $this->request->getPost('username'),
-            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT)
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'otp_secret' => $otp_secret,
+            'otp_ts' => $otp_ts,
         ]);
 
-        session()->set('user', $user->getInsertID());
+        // setando o id do usuário na session para utilizar na próxima página
+        session()->set('userId', $user->getInsertID());
 
         //dd($user);
 
@@ -104,12 +118,79 @@ class Login extends BaseController
     public function registerOtp()
     {
         $data = [
-            'title'     => 'Register Page',
+            'title'     => 'OTP codes',
         ];
 
-        if (!session()->has('userId')) {
+        session()->set('userId', 4);
 
+        if (!session()->has('userId')) {
+            dd(session()->get());
             return redirect()->route('login/register')->with('error', 'Ocorreu um erro ao criar o usuário');
+        }
+
+        $userModel = new UserModel();
+        $user = $userModel->where('id', session()->get('userId'))->first();
+
+        if (!$user) {
+            return redirect()->route('login/register')->with('error', 'Ocorreu um erro ao criar o usuário');
+        }
+
+        if (empty($user->otp_secret)) {
+            return redirect()->route('login/register')->with('error', 'Ocorreu um erro ao criar o usuário');
+        }
+
+        // instaciando o Google2FA
+        $google2fa = new Google2FA();
+
+        // gerando os dados para o qrcode
+        $qrCodeUrl = $google2fa->getQRCodeUrl(
+            'SD Login',
+            'company@email.com',
+            $user->otp_secret,
+        );
+
+        // gerando a url que direciona para o qrcode
+        $qrcode_src = (new QRCode)->render($qrCodeUrl);
+        $data['qrcode_src'] = $qrcode_src;
+        $data['otp_secret'] = $user->otp_secret;
+
+        // pesquisar no banco os códigos de backup que o usuário já possa ter gerado
+        $backupCodesModel = new BackupcodesModel();
+        $backupCodes = $backupCodesModel
+            ->where('cod_user', session()->get('userId'))
+            ->where('used', 0)
+            ->findAll();
+
+        $numRows = count($backupCodes);
+
+        if ($numRows < 10) {
+
+            $recovery_codes = [];
+            // for para 8 códigos de recuperação
+            for ($i = 0; $i < 8; $i++) {
+
+                // gerando um randômico de 1000 até 99999999 para evitar
+                // de ser um número muito pequeno
+                $randon = random_int(1000, 99999999);
+
+                // formatando o número para preencher com zeros à esquerda
+                array_push($recovery_codes, [
+                    'cod_user'      => session()->get('userId'),
+                    'backup_code'   => sprintf("%'.08d", $randon),
+                ]);
+            }
+
+            $db      = \Config\Database::connect();
+            $builder = $db->table('backupcodes');
+            $affectedRows = $builder->insertBatch($recovery_codes);
+            //$numRows = $result->affectedRows();
+            dd($affectedRows);
+        }
+
+        dd($numRows);
+
+        foreach ($backupCodes as $code) {
+            echo $code->backup_code . '<br>';
         }
 
         // $sql = "SELECT otp_secret FROM users WHERE id = :id";
@@ -121,11 +202,15 @@ class Login extends BaseController
         $db      = \Config\Database::connect();
         $builder = $db->table('backupcodes');
         $builder->select('backup_code');
-        $builder->where('cod_user', session()->get('user')->id);
+        $builder->where('cod_user', session()->get('userId'));
         $builder->where('used', 0);
-        $query = $builder->get();
+        $result = $builder->get();
 
-        dd($query->getNumRows());
+        foreach ($result->getResult() as $row) {
+            echo $row->backup_code . '<br>';
+        }
+
+        dd($result->getNumRows());
 
         $array = ['cod_user' => session()->get('userId'), 'used' => 0];
 
@@ -171,7 +256,7 @@ class Login extends BaseController
         }
 
         unset($userFound->password);
-        session()->set('user', $userFound);
+        session()->set('user', (array)$userFound);
 
         //dd($userFound);
 
@@ -188,6 +273,7 @@ class Login extends BaseController
 
     public function otp()
     {
+
         $data = [
             'title'     => 'Check OTP Page',
         ];
@@ -196,21 +282,22 @@ class Login extends BaseController
 
     public function checkOtp()
     {
+
+        // se não existir a sessão do usuário, redireciona para a página de login
         if (!session()->has('user')) {
             session()->destroy();
-            return redirect()->route('login')->with('error', 'Ocorreu um erro ao logar')->withInput();
+            return redirect()->route('login')->with('error', 'Ocorreu um erro')->withInput();
         }
 
         // validador
         $validated = $this->validate(
             [
-                'otp' => 'required|max_length[8]|min_length[6]'
+                'otp' => 'required|exact_length[6,8]'
             ],
             [
                 'otp' => [
                     'required' => 'Código OTP é requerido',
-                    'max_length' => 'Código OTP deve ter entre 6 e 8 caracteres',
-                    'min_length' => 'Código OTP deve ter entre 6 e 8 caracteres'
+                    'exact_length' => 'Código OTP deve ter entre 6 e 8 caracteres',
                 ]
             ]
         );
@@ -220,8 +307,8 @@ class Login extends BaseController
             return redirect()->to('login/checkotp')->with('errors', $this->validator->getErrors())->withInput();
         }
 
-        $otp_secret = session()->has('user') ? session()->get('user')->otp_secret : null;
-        $otp_ts = session()->has('user') ? session()->get('user')->otp_ts : null;
+        $otp_secret = session()->has('user') ? session()->get('user')['otp_secret'] : null;
+        $otp_ts = session()->has('user') ? session()->get('user')['otp_ts'] : null;
         $otp = $this->request->getPost('otp');
 
         // se o código for 8 caracteres, é um código de backup
@@ -231,6 +318,7 @@ class Login extends BaseController
             }
         } else {
 
+            // se não, é um código OTP normal
             $google2fa = new Google2FA();
 
             // metodo para garantir que cada código seja utilizado uma única vez
@@ -244,11 +332,13 @@ class Login extends BaseController
             // atualizar o timestamp do OTP no usuário
             $userModel = new UserModel();
             $data = [
-                'id'     => session()->get('user')->id,
+                'id'     => session()->get('user')['id'],
                 'otp_ts' => $timestamp,
             ];
             $userModel->save($data);
         }
+
+        session()->push('user', ['otp_verified' => 1]);
 
         return redirect()->route('news');
     }
@@ -282,9 +372,7 @@ class Login extends BaseController
         // se o código for válido, retorna true
         return true;
 
-        //$total = $backupCodesModel->countAllResults();
-        dd($backupCode);
-
+        /*
         $db      = \Config\Database::connect();
         $builder = $db->table('backupcodes');
         $builder->select('backup_code');
@@ -300,11 +388,6 @@ class Login extends BaseController
         $backupCodes = $query->getResult();
 
         dd($backupCodes);
-
-        $backupCodes = array_map(function ($code) {
-            return $code->backup_code;
-        }, $backupCodes);
-        $backupCodes = array_unique($backupCodes);
-        $backupCodes = array_values($backupCodes);
+        */
     }
 }

@@ -32,6 +32,10 @@ class Auth implements FilterInterface
         if (!session()->has('user')) {
             return redirect()->to('/login');
         }
+
+        if (empty(session()->get('user')['otp_verified'])) {
+            return redirect()->to('login/logout');
+        }
     }
 
     /**
