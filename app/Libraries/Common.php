@@ -15,3 +15,16 @@ if (! function_exists('dd')) {
         exit;
     }
 }
+if (! function_exists('objToArray')) {
+    /**
+     * Convert object to array
+     *
+     * @param $object
+     *
+     * @return array
+     */
+    function objToArray($object)
+    {
+        return json_decode(json_encode($object), true);
+    }
+}

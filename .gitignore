@@ -63,6 +63,8 @@ writable/uploads/*
 writable/debugbar/*
 !writable/debugbar/.gitkeep
 
+writable/empregados.db
+
 php_errors.log
 
 #-------------------------
@@ -129,4 +131,4 @@ nb-configuration.xml
 *.sqlite
 *.sqlite3
 *.db
-writable/empregados.db
+

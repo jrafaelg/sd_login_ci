@@ -5,9 +5,11 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\BackupcodesModel;
 use App\Models\UserModel;
+use App\ThirdParty\Cipher;
 use chillerlan\QRCode\QRCode;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Session;
+use phpseclib3\Crypt\RSA;
 use PragmaRX\Google2FA\Google2FA;
 
 
@@ -22,6 +24,10 @@ class Login extends BaseController
 
     public function index()
     {
+
+        $session_items = ['user', 'userId'];
+        session()->remove($session_items);
+
         $data = [
             'title'     => 'Login Page',
         ];
@@ -99,12 +105,23 @@ class Login extends BaseController
         $otp_ts = $google2fa->getTimestamp();
 
 
+        // gerando as chaves
+        $private_key = RSA::createKey(2048);
+        $public_key = $private_key->getPublicKey();
+
+        // encriptando a chave privada com a senha de assinatura
+        $cipher = new Cipher();
+        $ciphedPrivateKey = $cipher->encrypt($private_key, $this->request->getPost('password_sign'));
+
+
         $user = new UserModel();
         $user->insert([
             'username' => $this->request->getPost('username'),
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
             'otp_secret' => $otp_secret,
             'otp_ts' => $otp_ts,
+            'private_key' => $ciphedPrivateKey,
+            'public_key' => $public_key,
         ]);
 
         // setando o id do usuário na session para utilizar na próxima página
@@ -121,18 +138,18 @@ class Login extends BaseController
             'title'     => 'OTP codes',
         ];
 
-        session()->set('userId', 4);
+        //session()->set('userId', 4);
 
         if (!session()->has('userId')) {
-            dd(session()->get());
-            return redirect()->route('login/register')->with('error', 'Ocorreu um erro ao criar o usuário');
+            return redirect()->route('login')->with('error', 'Ocorreu um erro');
         }
 
         $userModel = new UserModel();
         $user = $userModel->where('id', session()->get('userId'))->first();
 
+        // se não encontrar o usuário, redireciona para a página de login
         if (!$user) {
-            return redirect()->route('login/register')->with('error', 'Ocorreu um erro ao criar o usuário');
+            return redirect()->route('login')->with('error', 'Ocorreu um erro');
         }
 
         if (empty($user->otp_secret)) {
@@ -163,9 +180,9 @@ class Login extends BaseController
 
         $numRows = count($backupCodes);
 
-        if ($numRows < 10) {
+        if ($numRows < 1) {
 
-            $recovery_codes = [];
+            $backupCodes = [];
             // for para 8 códigos de recuperação
             for ($i = 0; $i < 8; $i++) {
 
@@ -174,46 +191,28 @@ class Login extends BaseController
                 $randon = random_int(1000, 99999999);
 
                 // formatando o número para preencher com zeros à esquerda
-                array_push($recovery_codes, [
+                array_push($backupCodes, [
                     'cod_user'      => session()->get('userId'),
-                    'backup_code'   => sprintf("%'.08d", $randon),
+                    'backup_code'   => sprintf("%'.08d", $randon), // preenchendo com zeros à esquerda
                 ]);
             }
 
+            // salvando os códigos de backup no banco
             $db      = \Config\Database::connect();
             $builder = $db->table('backupcodes');
-            $affectedRows = $builder->insertBatch($recovery_codes);
-            //$numRows = $result->affectedRows();
-            dd($affectedRows);
+            $affectedRows = $builder->insertBatch($backupCodes);
         }
 
-        dd($numRows);
+        //log_message('debug', __FILE__ . ' - ' . __LINE__ . ' - ' . __METHOD__ . ' - ' . __FUNCTION__ . ' - ' . __CLASS__ . ' - ' . __DIR__);
+        $log_data = [
+            'id' => $user->id,
+            'username' => $user->username,
+            'ip_address' => $this->request->getIPAddress(),
 
-        foreach ($backupCodes as $code) {
-            echo $code->backup_code . '<br>';
-        }
+        ];
+        log_message('notice', 'User created successfully. ID: {id} - username: {username} - IP: {ip_address}', $log_data);
 
-        // $sql = "SELECT otp_secret FROM users WHERE id = :id";
-
-        //$sql = "SELECT backup_code FROM backupcodes WHERE cod_user = :id AND used = 0";
-        //$backupCodes = new BackupcodesModel();
-        //$userFound = $backupCodes->where('cod_user', $this->request->getPost('username'))->first();
-
-        $db      = \Config\Database::connect();
-        $builder = $db->table('backupcodes');
-        $builder->select('backup_code');
-        $builder->where('cod_user', session()->get('userId'));
-        $builder->where('used', 0);
-        $result = $builder->get();
-
-        foreach ($result->getResult() as $row) {
-            echo $row->backup_code . '<br>';
-        }
-
-        dd($result->getNumRows());
-
-        $array = ['cod_user' => session()->get('userId'), 'used' => 0];
-
+        $data['backupCodes'] = objToArray($backupCodes);
 
         return view('login/registerotp', $data);
     }
@@ -266,7 +265,7 @@ class Login extends BaseController
             'ip_address' => $this->request->getIPAddress(),
         ];
 
-        log_message('info', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
+        log_message('notice', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
 
         return redirect()->to('login/checkotp');
     }
