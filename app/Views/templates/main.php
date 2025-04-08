@@ -37,6 +37,17 @@
     </div>
 <?php endif ?>
 
+<?php if (session()->has('success')) : ?>
+    <div class="position-fixed top-0 end-0 p-3">
+        <div class="">
+            <div class="alert alert-success alert-dismissible fade show small text-center" role="alert">
+                <?= session()->getFlashdata('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+<?php endif ?>
+
 <div class="container" style="min-height: 90vh;">
     <?= $this->renderSection('content'); ?>
 </div>

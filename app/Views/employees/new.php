@@ -16,13 +16,14 @@
 
 
             <form action="<?= url_to('Employees::new') ?>" method="post">
+                <?= csrf_field() ?>
                 <div class="row gy-2 overflow-hidden">
                     <div class="col-12">
                         <div class="form-floating mb-4">
                             <input type="text" name="name" id="name" placeholder="Name" required
-                                class="form-control <?= !empty(session()->getFlashdata('errors')['name_err']) ? 'is-invalid' : ''; ?>"
+                                class="form-control <?= !empty(session()->getFlashdata('errors')['name']) ? 'is-invalid' : ''; ?>"
                                 value="<?= set_value('name') ?? ''; ?>">
-                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['name_err'] ?? '' ?></span>
+                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['name'] ?? '' ?></span>
                             <label for="name">Name</label>
                         </div>
                     </div>
@@ -33,9 +34,9 @@
                                 name="address"
                                 id="address"
                                 placeholder="Address"
-                                class="form-control <?= !empty(session()->getFlashdata('errors')['address_err']) ? 'is-invalid' : ''; ?>"
+                                class="form-control <?= !empty(session()->getFlashdata('errors')['address']) ? 'is-invalid' : ''; ?>"
                                 required><?= set_value('address') ?? ''; ?></textarea>
-                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['address_err'] ?? '' ?></span>
+                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['address'] ?? '' ?></span>
                             <label for="address">Address</label>
                         </div>
                     </div>
@@ -43,9 +44,9 @@
                     <div class="col-12">
                         <div class="form-floating mb-3">
                             <input type="text" name="salary" id="salary" placeholder="Salary" required
-                                class="form-control <?= !empty(session()->getFlashdata('errors')['salary_err']) ? 'is-invalid' : ''; ?>"
+                                class="form-control <?= !empty(session()->getFlashdata('errors')['salary']) ? 'is-invalid' : ''; ?>"
                                 value="<?= set_value('salary') ?? ''; ?>">
-                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['salary_err'] ?? '' ?></span>
+                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['salary'] ?? '' ?></span>
                             <label for="salary">Salary</label>
                         </div>
                     </div>
@@ -54,9 +55,9 @@
                         <div class="form-floating mb-3">
                             <input type="password" name="password_sign" id="password_sign" required
                                 placeholder="Password Sign"
-                                class="form-control <?= !empty(session()->getFlashdata('errors')['password_sign_err']) ? 'is-invalid' : ''; ?>"
+                                class="form-control <?= !empty(session()->getFlashdata('errors')['password_sign']) ? 'is-invalid' : ''; ?>"
                                 value="<?= set_value('password_sign') ?? ''; ?>">
-                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['password_sign_err'] ?? '' ?></span>
+                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['password_sign'] ?? '' ?></span>
                             <label for="password_sign">Password Sign</label>
                         </div>
                     </div>
