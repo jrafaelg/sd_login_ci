@@ -33,16 +33,18 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('news/new', [News::class, 'new']);
     $routes->post('news', [News::class, 'create']);
     $routes->get('news/(:segment)', [News::class, 'show']);
+
     //employees
     $routes->get('employees', [Employees::class, 'index'], ['as' => 'employees']);
-    $routes->get('employees/(:segment)', [Employees::class, 'show']);
+    $routes->get('employees/show/(:segment)', [Employees::class, 'show']);
     $routes->get('employees/edit/(:segment)', [Employees::class, 'edit']);
     $routes->post('employees/update', [Employees::class, 'update']);
     $routes->get('employees/delete/(:segment)', [Employees::class, 'delete']);
     $routes->post('employees/delete', [Employees::class, 'remove']);
     $routes->get('employees/new', [Employees::class, 'new']);
-    $routes->post('employees', [Employees::class, 'create']);
+    $routes->post('employees/new', [Employees::class, 'create']);
 });
+
 
 
 //$routes->get('pages', [Pages::class, 'index']);

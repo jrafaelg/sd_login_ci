@@ -51,12 +51,12 @@
                                             <a href="<?= url_to('Employees::edit', $employee['id']) ?>" class="me-2" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>
                                             <a href="<?= url_to('Employees::delete', $employee['id']) ?>" class="me-2" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a> -->
 
-                                            <a href="<?= url_to('Employees::show', $employee['id']) ?>" class="btn btn-success btn-sm">Show</a>
-                                            <a href="<?= url_to('Employees::edit', $employee['id']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                            <a href="<?= url_to('Employees::show', $employee['id']) ?>" class="btn btn-outline-primary btn-sm">Show</a>
+                                            <a href="<?= url_to('Employees::edit', $employee['id']) ?>" class="btn btn-outline-primary btn-sm">Edit</a>
                                             <form action="<?= url_to('Employees::delete', $employee['id']) ?>" method="post" class="d-inline">
                                                 <?= csrf_field() ?>
                                                 <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
                                             </form>
                                         </td>
                                     </tr>
