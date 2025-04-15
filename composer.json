@@ -42,6 +42,8 @@
         "sort-packages": true
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "dev": "php -S localhost:8080 -t public",
+        "spark": "php spark server --host=localhost --port=8080" 
     }
 }

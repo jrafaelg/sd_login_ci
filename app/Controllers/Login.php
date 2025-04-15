@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\BackupcodesModel;
+use App\Models\PermissionModel;
+use App\Models\RoleModel;
 use App\Models\UserModel;
 use App\ThirdParty\Cipher;
 use chillerlan\QRCode\QRCode;
@@ -266,6 +268,26 @@ class Login extends BaseController
 
         log_message('info', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
 
+        $roles = $this->getRoles($userFound->id);
+        //dump($roles);
+
+        $permissionsUser = $this->getPermissionsUser($userFound->id);
+        //dump($permissionsUser);
+
+        $permissionsRoles = $this->getPermissonsRoles($roles);
+        //dump($permissionsRoles);
+
+        //$permissions = array_merge($permissionsUser, $permissionsRoles);
+        //$permissions = $permissionsUser + $permissionsRoles;
+        $permissions =  [...$permissionsUser, ...$permissionsRoles];
+        //dump($permissions);
+
+
+        //dd();
+
+        session()->set('roles', $roles);
+        session()->set('permissions', $permissions);
+
         return redirect()->to('login/checkotp');
     }
 
@@ -387,5 +409,97 @@ class Login extends BaseController
 
         dd($backupCodes);
         */
+    }
+
+    private function getRoles(int $id)
+    {
+
+        if (empty($id)) {
+            return;
+        }
+
+        $rolesModel = new RoleModel();
+        $rolesFound = $rolesModel
+            ->select('roles.id, roles.key')
+            ->join('role_user', 'role_user.role_id = roles.id')
+            ->join('users', 'users.id = role_user.user_id')
+            ->where('users.id', $id)
+            ->findAll();
+
+        if (empty($rolesFound)) {
+            return;
+        }
+
+        // planificando o array retornado
+        $roles = [];
+        foreach ($rolesFound as $role) {
+            $roles[$role['id']] = $role['key'];
+        }
+
+        return $roles;
+    }
+
+    private function getPermissionsUser(int $id)
+    {
+        if (empty($id)) {
+            return;
+        }
+
+        $permissionsUserModel = new PermissionModel();
+        $permissionsFound = $permissionsUserModel
+            ->select('permissions.id, permissions.key')
+            ->join('permission_user', 'permission_user.permission_id = permissions.id')
+            ->join('users', 'users.id = permission_user.user_id')
+            ->where('users.id', $id)
+            ->findAll();
+
+        if (empty($permissionsFound)) {
+            return;
+        }
+
+        // planificando o array retornado
+        $permissions = [];
+        foreach ($permissionsFound as $permission) {
+            $permissions[$permission['id']] = $permission['key'];
+        }
+
+        return $permissions;
+    }
+
+    private function getPermissonsRoles($id)
+    {
+
+
+        if (empty($id)) {
+            return;
+        }
+
+        // pegando as chaves que são os IDs 
+        // e ajustando apara a clausula IN do SQL
+        $ids = array_keys($id);
+        //$ids = implode(', ', $ids);
+
+        //dd($ids);
+
+        $permissionsModel = new PermissionModel();
+        $permissionsFound = $permissionsModel
+            ->select('permissions.id, permissions.key')
+            ->join('permission_role', 'permission_role.permission_id = permissions.id')
+            ->join('roles', 'roles.id = permission_role.role_id')
+            ->whereIn('roles.id', $ids)
+            ->findAll();
+
+        if (empty($permissionsFound)) {
+            return;
+        }
+
+        // planificando o array retornado
+        $permissions = [];
+        foreach ($permissionsFound as $permission) {
+            $permissions[$permission['id']] = $permission['key'];
+        }
+
+        //dd($permissions);
+        return $permissions;
     }
 }

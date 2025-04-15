@@ -31,11 +31,13 @@ class Backupcodes extends Migration
                 'null'       => false,
             ],
             'backup_code' => [
-                'type' => 'TEXT',
+                'type' => 'VARCHAR',
+                'constraint' => 10,
                 'null' => false,
             ],
             'used' => [
-                'type' => 'TEXT',
+                'type' => 'BOOLEAN',
+                'constraint' => 1,
                 'null' => true,
                 'default' => 0,
             ],

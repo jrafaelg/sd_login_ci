@@ -25,8 +25,19 @@ class Permission implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        dd($arguments);
-        return redirect()->route('employees.index');
+
+        if (can($arguments)) {
+            return true;
+        }
+
+        return redirect()
+            ->setStatusCode(403)
+            ->with('message', 'Não autorizado.')
+            ->to('403')
+            //->route('403')
+            ->withInput();
+        //->to('errors/html/error_403'); //->with('message', 'Não autorizado.')->withInput();
+        //$this->response->setStatusCode(403)->setBody('403 Forbidden');
     }
 
     /**

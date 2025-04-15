@@ -18,19 +18,18 @@ class EmployeesSeeder extends Seeder
         // }
 
 
-        for ($i = 0; $i < 100; $i++)
-        {
+        for ($i = 0; $i < 100; $i++) {
             $employes[$i] = $this->generateFakeEmploye();
-
         }
 
         $this->db->table('employees')->insertBatch($employes);
-
     }
 
     private function generateFakeEmploye()
     {
         $fakerObject = Factory::create();
+
+
 
         return array(
             "name" => $fakerObject->name,
@@ -40,6 +39,5 @@ class EmployeesSeeder extends Seeder
             "digital_sign" => random_int(1000, 99999999),
             "created_at" => date("Y-m-d H:i:s"),
         );
-
     }
 }

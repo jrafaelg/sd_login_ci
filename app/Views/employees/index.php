@@ -49,8 +49,11 @@
 
                                             <a href="<?= url_to('Employees::show', $employee['id']) ?>" class="me-2" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>
                                             <a href="<?= url_to('Employees::edit', $employee['id']) ?>" class="me-2" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>
+                                            <?php //if (can('employees.delete')): 
+                                            ?>
                                             <a href="<?= url_to('Employees::delete', $employee['id']) ?>" class="me-2" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>
-                                            <i class="bi-alarm"></i>
+                                            <?php //endif 
+                                            ?>
                                             <!-- <a href="<?= url_to('Employees::show', $employee['id']) ?>" class="btn btn-outline-primary btn-sm">Show</a>
                                             <a href="<?= url_to('Employees::edit', $employee['id']) ?>" class="btn btn-outline-primary btn-sm">Edit</a>
                                             <form action="<?= url_to('Employees::delete', $employee['id']) ?>" method="post" class="d-inline">
