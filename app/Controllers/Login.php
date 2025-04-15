@@ -12,8 +12,6 @@ use Config\Session;
 use phpseclib3\Crypt\RSA;
 use PragmaRX\Google2FA\Google2FA;
 
-
-
 class Login extends BaseController
 {
 
@@ -340,7 +338,7 @@ class Login extends BaseController
 
         session()->push('user', ['otp_verified' => 1]);
 
-        return redirect()->route('news');
+        return redirect()->route('employees.index');
     }
 
     public function logout()
@@ -360,7 +358,7 @@ class Login extends BaseController
             ->first();
 
         // se não retornar nada é por que o usuário não tem mais códigos de backup
-        // ou o código não existe ou já foi utilizado         
+        // ou o código não existe ou já foi utilizado
         if (!$backupCode) {
             return false;
         }
