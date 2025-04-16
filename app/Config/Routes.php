@@ -13,9 +13,6 @@ use App\Controllers\News;
 
 $routes->get('/', 'Home::index');
 
-
-use App\Controllers\Pages;
-
 $routes->get('login', [Login::class, 'index'], ['as' => 'login']);
 $routes->post('login', [Login::class, 'auth']);
 $routes->get('login/register', [Login::class, 'register']);
@@ -44,6 +41,8 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('employees/new', [Employees::class, 'new']);
     $routes->post('employees/new', [Employees::class, 'create']);
 });
+
+
 
 $routes->view('403', 'errors/html/error_403', ['message' => request()->getUri()->getSegments()]);
 

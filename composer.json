@@ -43,7 +43,13 @@
     },
     "scripts": {
         "test": "phpunit",
-        "dev": "php -S localhost:8080 -t public",
-        "spark": "php spark server --host=localhost --port=8080" 
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S localhost:8080 -t public"
+        ],
+        "spark": [
+            "Composer\\Config::disableProcessTimeout",
+            "php spark server --host=localhost --port=8080"
+        ]
     }
 }
