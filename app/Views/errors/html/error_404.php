@@ -11,13 +11,14 @@
             <div class="card-body p-3 p-md-4 p-xl-5">
                 <h1 class="text-center">404</h1>
 
-                <p class="text-center mt-5">
-                    <?php if (ENVIRONMENT !== 'production') : ?>
+                <?php if (ENVIRONMENT !== 'production') : ?>
+                    <p class="text-center mt-5">
                         <?php var_dump($message ?? 'Not Found') ?>
-                    <?php else : ?>
-                        <?= lang('Errors.sorryCannotFind') ?>
-                    <?php endif; ?>
-                </p>
+                    </p>
+                <?php endif; ?>
+
+                <p class="text-center mt-5"> <?= lang('Errors.sorryCannotFind') ?></p>
+
             </div>
         </div>
     </div>

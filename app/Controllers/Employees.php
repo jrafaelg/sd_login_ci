@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\EmployeesModel;
 use App\Models\UserModel;
 use App\ThirdParty\Cipher;
+use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\ResponseInterface;
 use phpseclib3\Crypt\RSA;
 
@@ -118,6 +119,12 @@ class Employees extends BaseController
 
     public function edit($id)
     {
+
+        // if (! is_file(APPPATH . 'Views/pages/employees/edit.php')) {
+        //     // Whoops, we don't have a page for that!
+        //     throw new PageNotFoundException('edit');
+        // }
+
         $data = [
             'title' => 'Edit Employee',
         ];
@@ -130,7 +137,7 @@ class Employees extends BaseController
             return redirect()->to('/employees')->with('error', 'Employee not found');
         }
 
-        return view('employees/edit', $data);
+        return $this->view('employees/edit', $data);
     }
 
     public function update()
@@ -259,5 +266,17 @@ class Employees extends BaseController
         $data['employees'] = $employeesModel->asArray()->findAll();
 
         return view('employees/index', $data);
+    }
+
+    public function view(string $page = 'home', array $data = [], array $options = [])
+    {
+        if (! is_file(APPPATH . 'Views/pages/' . $page . '.php')) {
+            // Whoops, we don't have a page for that!
+            throw new PageNotFoundException($page);
+        }
+
+        //$data['title'] = ucfirst($page); // Capitalize the first letter
+        //function view(string $name, array $data = [], array $options = []): string { }
+        return view($page, $data, $options);
     }
 }
