@@ -2,6 +2,8 @@
 
 namespace Config;
 
+use App\Libraries\Auth;
+use App\Libraries\Permission;
 use CodeIgniter\Config\BaseService;
 
 /**
@@ -29,4 +31,23 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+
+
+    public static function auth($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('auth');
+        }
+
+        return new Auth();
+    }
+
+    public static function permission($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('permission');
+        }
+
+        return new Permission();
+    }
 }

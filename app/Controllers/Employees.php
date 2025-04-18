@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\EmployeesModel;
 use App\Models\UserModel;
-use App\ThirdParty\Cipher;
+use App\Libraries\Cipher;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\ResponseInterface;
 use phpseclib3\Crypt\RSA;

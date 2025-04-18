@@ -7,10 +7,8 @@ use App\Models\BackupcodesModel;
 use App\Models\PermissionModel;
 use App\Models\RoleModel;
 use App\Models\UserModel;
-use App\ThirdParty\Cipher;
+use App\Libraries\Cipher;
 use chillerlan\QRCode\QRCode;
-use CodeIgniter\HTTP\ResponseInterface;
-use Config\Session;
 use phpseclib3\Crypt\RSA;
 use PragmaRX\Google2FA\Google2FA;
 
@@ -62,7 +60,7 @@ class Login extends BaseController
         $validated = $this->validate(
             [
                 'username' => 'required|is_unique[users.username]',
-                'password' => 'required|PasswordStrengthValidator',
+                'password' => 'required|PasswordIsValid',
                 'password_confirm' => 'required|matches[password]',
                 'password_sign' => 'required|min_length[6]',
                 'password_sign_confirm' => 'required|matches[password_sign]'
@@ -75,7 +73,7 @@ class Login extends BaseController
                 'password' => [
                     'required' => 'Password é requerido',
                     //'PasswordStrengthValidator'  => 'PasswordStrengthValidator',
-                    //'PasswordStrengthValidator'  => 'Password deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
+                    'PasswordStrengthValidator'  => 'Password deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
                 ],
                 'password_confirm' => [
                     'required' => 'Confirmação de password é requerido',
@@ -416,8 +414,10 @@ class Login extends BaseController
     private function getRoles(int $id)
     {
 
+        $roles = [];
+
         if (empty($id)) {
-            return;
+            return $roles;
         }
 
         $rolesModel = new RoleModel();
@@ -429,11 +429,11 @@ class Login extends BaseController
             ->findAll();
 
         if (empty($rolesFound)) {
-            return;
+            return $roles;
         }
 
         // planificando o array retornado
-        $roles = [];
+
         foreach ($rolesFound as $role) {
             $roles[$role['id']] = $role['key'];
         }
@@ -443,8 +443,11 @@ class Login extends BaseController
 
     private function getPermissionsUser(int $id)
     {
+
+        $permissions = [];
+
         if (empty($id)) {
-            return;
+            return $permissions;
         }
 
         $permissionsUserModel = new PermissionModel();
@@ -455,12 +458,12 @@ class Login extends BaseController
             ->where('users.id', $id)
             ->findAll();
 
+
         if (empty($permissionsFound)) {
-            return;
+            return $permissions;
         }
 
         // planificando o array retornado
-        $permissions = [];
         foreach ($permissionsFound as $permission) {
             $permissions[$permission['id']] = $permission['key'];
         }
@@ -470,18 +473,15 @@ class Login extends BaseController
 
     private function getPermissonsRoles($id)
     {
-
+        $permissions = [];
 
         if (empty($id)) {
-            return;
+            return $permissions;
         }
 
         // pegando as chaves que são os IDs 
         // e ajustando apara a clausula IN do SQL
         $ids = array_keys($id);
-        //$ids = implode(', ', $ids);
-
-        //dd($ids);
 
         $permissionsModel = new PermissionModel();
         $permissionsFound = $permissionsModel
@@ -492,16 +492,14 @@ class Login extends BaseController
             ->findAll();
 
         if (empty($permissionsFound)) {
-            return;
+            return $permissions;
         }
 
         // planificando o array retornado
-        $permissions = [];
         foreach ($permissionsFound as $permission) {
             $permissions[$permission['id']] = $permission['key'];
         }
 
-        //dd($permissions);
         return $permissions;
     }
 }

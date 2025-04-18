@@ -25,15 +25,17 @@ class Auth implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        // var_dump(session()->get('user'));
-        // var_dump($request->getUri()->getPath());
-        // exit;
+        $auth = service('auth');
 
-        if (!session()->has('user')) {
+        // Check if the user is logged in
+        // If not, redirect to the login page
+        if (!$auth->isLoggedIn()) {
             return redirect()->to('/login');
         }
 
-        if (empty(session()->get('user')['otp_verified'])) {
+        // Check if the user has verified their OTP
+        // If not, redirect to the logout page
+        if (!$auth->checkOtp()) {
             return redirect()->to('login/logout');
         }
     }

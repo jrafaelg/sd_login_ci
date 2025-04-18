@@ -1,11 +1,12 @@
 <?php
 
+namespace App\Libraries;
+
+
 /**
  * @author Darko Todorić
  * @url https://github.com/darkotodoric/password-strength-validator
  */
-
-namespace App\ThirdParty;
 
 class PasswordStrengthValidator
 {
@@ -47,12 +48,12 @@ class PasswordStrengthValidator
         bool   $requireLowerCase = true
     ) {
         $this->password = $password;
-        $this->errorMessage = '';
         $this->minLength = $minLength;
         $this->requireSpecialChar = $requireSpecialChar;
         $this->requireNumber = $requireNumber;
         $this->requireUpperCase = $requireUpperCase;
         $this->requireLowerCase = $requireLowerCase;
+        $this->errorMessage = '';
     }
 
 
@@ -61,7 +62,7 @@ class PasswordStrengthValidator
      * @return bool
      * public function even($value, ?string &$error = null): bool
      */
-    public function PasswordStrengthValidator($value, ?string &$error = null): bool
+    public function PasswordIsValid($value, ?string &$error = null): bool
     {
 
         $this->password = $value;
@@ -73,52 +74,20 @@ class PasswordStrengthValidator
         foreach ($methods as $method) {
             if (
                 $method != '__construct' &&
-                $method != 'PasswordStrengthValidator'
+                $method != 'PasswordIsValid'
                 && $method != 'getErrorMessage'
             ) {
                 if (method_exists($this, $method) && is_callable([$this, $method])) {
 
-                    dump($method);
+                    //dump($method);
 
                     if (!$this->{$method}()) {
-                        dd($this);
+                        //dd($this);
                         $error = $this->errorMessage;
                         return false;
                     }
                 }
             }
-        }
-
-        return true;
-
-        if (!$this->isLongEnough()) {
-            $this->errorMessage = "Password length must be at least {$this->minLength} characters long.";
-            $error = $this->errorMessage;
-            return false;
-        }
-
-        if ($this->requireSpecialChar && !$this->hasSpecialChar()) {
-            $this->errorMessage = "Special characters required.";
-            $error = $this->errorMessage;
-            return false;
-        }
-
-        if ($this->requireNumber && !$this->hasNumber()) {
-            $this->errorMessage = "Number required.";
-            $error = $this->errorMessage;
-            return false;
-        }
-
-        if ($this->requireUpperCase && !$this->hasUpperCase()) {
-            $this->errorMessage = "Uppercase required.";
-            $error = $this->errorMessage;
-            return false;
-        }
-
-        if ($this->requireLowerCase && !$this->hasLowerCase()) {
-            $this->errorMessage = "Lowercase required.";
-            $error = $this->errorMessage;
-            return false;
         }
 
         return true;
@@ -134,42 +103,69 @@ class PasswordStrengthValidator
     }
 
     /**
+     * Check if the password length is at least the minimum length
      * @return bool
      */
     private function isLongEnough(): bool
     {
-        return mb_strlen($this->password) >= $this->minLength;
+
+        if (!(mb_strlen($this->password) >= $this->minLength)) {
+            $this->errorMessage = "Password length must be at least {$this->minLength} characters long.";
+            return false;
+        }
+        return true;
     }
 
     /**
+     * Check if the password contains at least one special character
      * @return bool
      */
     private function hasSpecialChar(): bool
     {
-        return preg_match('/[\p{P}\p{S}]/', $this->password);
+
+        if ($this->requireSpecialChar && !preg_match('/[\p{P}\p{S}]/', $this->password)) {
+            $this->errorMessage = "Special characters required.";
+            return false;
+        }
+        return true;
     }
 
     /**
+     * Check if the password contains at least one number
      * @return bool
      */
     private function hasNumber(): bool
     {
-        return preg_match('/[0-9]/', $this->password);
+        if ($this->requireNumber && !preg_match('/[0-9]/', $this->password)) {
+            $this->errorMessage = "Number required.";
+            return false;
+        }
+        return true;
     }
 
     /**
+     * Check if the password contains at least one uppercase letter
      * @return bool
      */
     private function hasUpperCase(): bool
     {
-        return preg_match('/[A-Z]/', $this->password);
+        if ($this->requireUpperCase && !preg_match('/[A-Z]/', $this->password)) {
+            $this->errorMessage = "Uppercase required.";
+            return false;
+        }
+        return true;
     }
 
     /**
+     * Check if the password contains at least one lowercase letter
      * @return bool
      */
     private function hasLowerCase(): bool
     {
-        return preg_match('/[a-z]/', $this->password);
+        if ($this->requireLowerCase && !preg_match('/[a-z]/', $this->password)) {
+            $this->errorMessage = "Lowercase required.";
+            return false;
+        }
+        return true;
     }
 }

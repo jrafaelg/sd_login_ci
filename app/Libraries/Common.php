@@ -96,28 +96,26 @@ if (! function_exists('getRoles')) {
     }
 }
 
-if (! function_exists('can')) {
+if (! function_exists('cans')) {
     /**
      * check if user can do something
      *
      * @return bolean
      */
-    function can($arguments)
+    function cans($ability)
     {
 
-        if (is_null($arguments)) {
+
+        if (is_null($ability)) {
             return false;
         }
 
-        if (is_string($arguments)) {
-        }
-
-        if (!is_array($arguments)) {
-            $arguments = [$arguments];
+        if (!is_array($ability)) {
+            $ability = [$ability];
         }
 
         // colocando todas em minúsculo
-        $arguments = array_map('strtolower', $arguments);
+        $ability = array_map('strtolower', $ability);
 
         if (!session()->has('roles')) {
             return false;
@@ -126,7 +124,7 @@ if (! function_exists('can')) {
         $roles = session()->get('roles');
 
         if (in_array('admin', $roles)) {
-            //return true;
+            return true;
         }
 
         if (!session()->has('permissions')) {
@@ -135,10 +133,24 @@ if (! function_exists('can')) {
 
         $permissions = session()->get('permissions');
 
-        // $arguments é um array, então vericamos com array_intersect
-        // se existe algum elemento em comum entre $arguments e $permissions
-        if (count(array_intersect($arguments, $permissions)) >= 1) {
+        // $ability é um array, então vericamos com array_intersect
+        // se existe algum elemento em comum entre $ability e $permissions
+        if (count(array_intersect($ability, $permissions)) >= 1) {
             return true;
         }
+    }
+}
+
+if (! function_exists('can')) {
+    /**
+     * check if user can do something
+     *
+     * @return bolean
+     */
+    function can($ability)
+    {
+        $permission = service('permission');
+
+        return $permission->can($ability);
     }
 }

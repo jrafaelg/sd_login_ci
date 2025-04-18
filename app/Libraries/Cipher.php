@@ -5,7 +5,7 @@
  * Funções de encriptação e desincriptação
  */
 
-namespace App\ThirdParty;
+namespace App\Libraries;
 
 class Cipher
 {
