@@ -149,8 +149,8 @@ if (! function_exists('can')) {
      */
     function can($ability)
     {
-        $permission = service('permission');
+        $authorize = service('authorize');
 
-        return $permission->can($ability);
+        return $authorize->can($ability);
     }
 }

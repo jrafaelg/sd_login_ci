@@ -6,7 +6,7 @@ use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 
-class Permission implements FilterInterface
+class AuthorizeFilter implements FilterInterface
 {
     /**
      * Do whatever processing this filter needs to do.
@@ -26,7 +26,10 @@ class Permission implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
 
-        if (can($arguments)) {
+        // chamando o serivço
+        $permission = service('authorize');
+
+        if ($permission->can($arguments)) {
             return true;
         }
 

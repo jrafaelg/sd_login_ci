@@ -23,7 +23,7 @@ class Employees extends BaseController
             'title' => 'Add New Employee',
         ];
 
-        return view('employees/new', $data);
+        return $this->view('employees/new', $data);
     }
 
     public function create()
@@ -263,7 +263,12 @@ class Employees extends BaseController
 
         $employeesModel = model('EmployeesModel');
 
-        $data['employees'] = $employeesModel->asArray()->findAll();
+        $employeesCached = cache()->remember('employees', 10, function () use ($employeesModel) {
+            //dump('Cache created');
+            return $employeesModel->asArray()->findAll();
+        });
+
+        $data['employees'] = $employeesCached;
 
         return view('employees/index', $data);
     }

@@ -48,7 +48,15 @@
     </div>
 <?php endif ?>
 
+
+<?php if (service('auth')->isCompleteLoging()): ?>
+    <?= $this->render('templates\navbar') ?: 'Fallback title'  ?>
+<?php endif ?>
+
 <div class="container" style="min-height: 90vh;">
+
+
+
     <?= $this->renderSection('content'); ?>
 </div>
 

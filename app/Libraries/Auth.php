@@ -5,29 +5,41 @@ namespace App\Libraries;
 class Auth
 {
 
-    private $session;
+    //private $session;
 
     public function __construct()
     {
         // Load the session library
-        $this->session = \Config\Services::session();
+        //$this->session = \Config\Services::session();
     }
 
     public function isLoggedIn()
     {
         // Check if the user is logged in
-        return $this->session->has('user');
+        return session()->has('user') ?? false;
     }
 
-    public function getUser()
-    {
-        // Get the logged-in user
-        return $this->session->get('user');
-    }
 
     public function checkOtp()
     {
         // Check if the user has verified their OTP
-        return $this->session->get('user')['otp_verified'] ?? false;
+        return session()->get('user')['otp_verified'] ?? false;
+    }
+
+    /**
+     * Check if the user is logged in and has verified their OTP.
+     * If both conditions are met, return true. Otherwise, return false.
+     */
+    public function isCompleteLoging(): bool
+    {
+        // Set the user session data
+        return ($this->isLoggedIn() && $this->checkOtp()) ? true : false;
+    }
+
+
+    public function getUser()
+    {
+        // Get the logged-in user
+        return session()->get('user');
     }
 }

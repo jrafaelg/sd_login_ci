@@ -25,6 +25,8 @@ class Auth implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
+
+        // chamando o serivço
         $auth = service('auth');
 
         // Check if the user is logged in

@@ -433,7 +433,6 @@ class Login extends BaseController
         }
 
         // planificando o array retornado
-
         foreach ($rolesFound as $role) {
             $roles[$role['id']] = $role['key'];
         }
