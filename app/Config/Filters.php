@@ -3,7 +3,7 @@
 namespace Config;
 
 use App\Filters\Auth;
-use App\Filters\AuthorizeFilter;
+use App\Filters\Authorize;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -42,7 +42,7 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'auth'          => Auth::class,
-        'authorize'     => AuthorizeFilter::class,
+        'authorize'     => Authorize::class,
 
         // shield
         // 'session'     => SessionAuth::class,
