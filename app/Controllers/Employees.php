@@ -8,6 +8,7 @@ use App\Models\UserModel;
 use App\Libraries\Cipher;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\ResponseInterface;
+use Exception;
 use phpseclib3\Crypt\RSA;
 
 class Employees extends BaseController
@@ -23,6 +24,7 @@ class Employees extends BaseController
             'title' => 'Add New Employee',
         ];
 
+        //return view('employees/new', $data);
         return $this->view('employees/new', $data);
     }
 
@@ -237,7 +239,12 @@ class Employees extends BaseController
 
         $data['employee']['digital_sign'] = $digital_sign;
 
-        return view('employees/show', $data);
+        try {
+            return view('employees/show1', $data);
+        } catch (Exception $e) {
+            throw new PageNotFoundException();
+            //dd($e->getMessage());
+        }
 
 
 
@@ -275,13 +282,14 @@ class Employees extends BaseController
 
     public function view(string $page = 'home', array $data = [], array $options = [])
     {
-        if (! is_file(APPPATH . 'Views/pages/' . $page . '.php')) {
+
+        // checa se o arquivo exite no disco
+        if (! is_file( APPPATH . 'Views/' . $page . '.php')) {
             // Whoops, we don't have a page for that!
             throw new PageNotFoundException($page);
         }
 
-        //$data['title'] = ucfirst($page); // Capitalize the first letter
-        //function view(string $name, array $data = [], array $options = []): string { }
+        // chama a view() do core com a variável passada
         return view($page, $data, $options);
     }
 }
