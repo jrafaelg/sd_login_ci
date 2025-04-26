@@ -1,8 +1,14 @@
-<?= $this->render('templates\header') ?: 'Fallback title'  ?>
+<?php
+//= $this->render('templates\header') ?: 'Fallback title'
+?>
 
 <?php
 //dd(session()->getFlashdata('errors'));
 ?>
+
+<?= $this->extend('templates\header') ?>
+
+<?= $this->section('main') ?>
 
 <?php if (session()->has('message')) : ?>
     <div class="position-fixed top-0 end-0 p-3">
@@ -54,10 +60,7 @@
 <?php endif ?>
 
 <div class="container" style="min-height: 90vh;">
-
-
-
     <?= $this->renderSection('content'); ?>
 </div>
 
-<?= $this->render('templates\footer') ?: 'Fallback title'  ?>
+<?= $this->endSection() ?>

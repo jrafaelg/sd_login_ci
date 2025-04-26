@@ -13,3 +13,13 @@
 </head>
 
 <body>
+
+
+    <?= $this->renderSection('main'); ?>
+
+
+    <?= $this->render('templates\footer') ?: 'Fallback title'  ?>
+
+</body>
+
+</html>

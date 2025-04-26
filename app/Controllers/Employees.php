@@ -240,7 +240,7 @@ class Employees extends BaseController
         $data['employee']['digital_sign'] = $digital_sign;
 
         try {
-            return view('employees/show1', $data);
+            return view('employees/show', $data);
         } catch (Exception $e) {
             throw new PageNotFoundException();
             //dd($e->getMessage());
@@ -284,7 +284,7 @@ class Employees extends BaseController
     {
 
         // checa se o arquivo exite no disco
-        if (! is_file( APPPATH . 'Views/' . $page . '.php')) {
+        if (! is_file(APPPATH . 'Views/' . $page . '.php')) {
             // Whoops, we don't have a page for that!
             throw new PageNotFoundException($page);
         }
