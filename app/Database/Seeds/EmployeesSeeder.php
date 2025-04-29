@@ -7,29 +7,28 @@ use Faker\Factory;
 
 class EmployeesSeeder extends Seeder
 {
+
+    /**
+     * tabela que receberá que a seed
+     */
+    private string $table = 'employees';
+
+    /**
+     *
+     */
     public function run()
     {
-        // for ($i = 0; $i < 100; $i++)
-        // {
-        //     $employe = $this->generateFakeEmploye();
-
-        //     // Using Query Builder
-        //     $this->db->table('employees')->insert($employe);
-        // }
-
 
         for ($i = 0; $i < 100; $i++) {
             $employes[$i] = $this->generateFakeEmploye();
         }
 
-        $this->db->table('employees')->insertBatch($employes);
+        $this->db->table($this->table)->insertBatch($employes);
     }
 
     private function generateFakeEmploye()
     {
         $fakerObject = Factory::create();
-
-
 
         return array(
             "name" => $fakerObject->name,

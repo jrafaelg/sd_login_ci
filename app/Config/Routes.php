@@ -4,6 +4,7 @@ use App\Controllers\Employees;
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\Login;
 use App\Controllers\News;
+use App\Controllers\Posts;
 
 /**
  * @var RouteCollection $routes
@@ -40,6 +41,10 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('employees/delete', [Employees::class, 'remove']);
     $routes->get('employees/new', [Employees::class, 'new']);
     $routes->post('employees/new', [Employees::class, 'create']);
+
+    //posts
+    $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index'], ['filter' => 'authorize:posts.view']);
+    $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new'], ['filter' => 'authorize:posts.add']);
 });
 
 

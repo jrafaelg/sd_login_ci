@@ -27,9 +27,9 @@ class Authorize implements FilterInterface
     {
 
         // chamando o serivço
-        $permission = service('authorize');
+        $authorize = service('authorize');
 
-        if ($permission->can($arguments)) {
+        if ($authorize->can($arguments)) {
             return true;
         }
 

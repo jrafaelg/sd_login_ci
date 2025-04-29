@@ -8,26 +8,49 @@
         <div class="mt-5 mb-3 clearfix text-center">
 
             <div class="text-center mb-3">
-                <h2 class="fw-normal text-center  mb-4">Employees Details</h2>
+                <h2 class="fw-normal text-center  mb-4">Posts List</h2>
             </div>
 
-            <div class="row">
-                <div class="d-flex justify-content-center">
-                    <a href="<?= url_to('Employees::new') ?>" class="btn btn-success pull-right ">
-                        <i class="fa fa-plus"></i> Add New Employee
-                    </a>
+            <?php if (can('post.add')): ?>
+                <div class="row">
+                    <div class="d-flex justify-content-center">
+                        <a href="<?= url_to('Posts::new') ?>" class="btn btn-success pull-right ">
+                            <i class="fa fa-plus"></i> Add New Post
+                        </a>
+                    </div>
                 </div>
-            </div>
+
+            <?php endif ?>
+
+            <?php // = $this->render('posts\test') ?: 'Fallback title'
+            ?>
 
 
-            <?php if (count($employees) <= 0): ?>
+            <!-- https://blog.getbootstrap.com/ -->
+            <main class="main">
+                <div class="posts-container mx-auto my-5">
+                    <div class="posts">
+                        <div class="post">
+                            <h1 class="post-title fw-semibold text-start">hi</h1>
+                            <p>olá</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+
+            <?php if (count($posts) <= 10000): ?>
                 <div class="alert alert-warning mt-3">
-                    No employees found.
+                    No posts found.
                 </div>
             <?php else: ?>
 
                 <div class="row mt-4 justify-content-md-center">
                     <div class="col-sm-10">
+
+
+
+
                         <table class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
