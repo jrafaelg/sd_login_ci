@@ -268,25 +268,23 @@ class Login extends BaseController
 
         log_message('info', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
 
-        $roles = $this->getRoles($userFound->id);
+        //$authorize = service('authorize');
+
+        //$roles = $authorize->getRoles($userFound->id);
         //dump($roles);
 
-        $permissionsUser = $this->getPermissionsUser($userFound->id);
+        //$permissionsUser = $authorize->getPermissionsByUser($userFound->id);
         //dump($permissionsUser);
 
-        $permissionsRoles = $this->getPermissonsRoles($roles);
+        //$permissionsRoles = $authorize->getPermissonsByRoles($roles);
         //dump($permissionsRoles);
 
         //$permissions = array_merge($permissionsUser, $permissionsRoles);
         //$permissions = $permissionsUser + $permissionsRoles;
-        $permissions =  [...$permissionsUser, ...$permissionsRoles];
-        //dump($permissions);
+        //$permissions =  [...$permissionsUser, ...$permissionsRoles];
 
-
-        //dd();
-
-        session()->set('roles', $roles);
-        session()->set('permissions', $permissions);
+        //session()->set('roles', $roles);
+        //session()->set('permissions', $permissions);
 
         return redirect()->to('login/checkotp');
     }
@@ -411,94 +409,94 @@ class Login extends BaseController
         */
     }
 
-    private function getRoles(int $id)
-    {
+    // private function getRoles(int $id)
+    // {
 
-        $roles = [];
+    //     $roles = [];
 
-        if (empty($id)) {
-            return $roles;
-        }
+    //     if (empty($id)) {
+    //         return $roles;
+    //     }
 
-        $rolesModel = new RoleModel();
-        $rolesFound = $rolesModel
-            ->select('roles.id, roles.key')
-            ->join('role_user', 'role_user.role_id = roles.id')
-            ->join('users', 'users.id = role_user.user_id')
-            ->where('users.id', $id)
-            ->findAll();
+    //     $rolesModel = new RoleModel();
+    //     $rolesFound = $rolesModel
+    //         ->select('roles.id, roles.key')
+    //         ->join('role_user', 'role_user.role_id = roles.id')
+    //         ->join('users', 'users.id = role_user.user_id')
+    //         ->where('users.id', $id)
+    //         ->findAll();
 
-        if (empty($rolesFound)) {
-            return $roles;
-        }
+    //     if (empty($rolesFound)) {
+    //         return $roles;
+    //     }
 
-        // planificando o array retornado
-        foreach ($rolesFound as $role) {
-            $roles[$role['id']] = $role['key'];
-        }
+    //     // planificando o array retornado
+    //     foreach ($rolesFound as $role) {
+    //         $roles[$role['id']] = $role['key'];
+    //     }
 
-        return $roles;
-    }
+    //     return $roles;
+    // }
 
-    private function getPermissionsUser(int $id)
-    {
+    // private function getPermissionsUser(int $id)
+    // {
 
-        $permissions = [];
+    //     $permissions = [];
 
-        if (empty($id)) {
-            return $permissions;
-        }
+    //     if (empty($id)) {
+    //         return $permissions;
+    //     }
 
-        $permissionsUserModel = new PermissionModel();
-        $permissionsFound = $permissionsUserModel
-            ->select('permissions.id, permissions.key')
-            ->join('permission_user', 'permission_user.permission_id = permissions.id')
-            ->join('users', 'users.id = permission_user.user_id')
-            ->where('users.id', $id)
-            ->findAll();
+    //     $permissionsUserModel = new PermissionModel();
+    //     $permissionsFound = $permissionsUserModel
+    //         ->select('permissions.id, permissions.key')
+    //         ->join('permission_user', 'permission_user.permission_id = permissions.id')
+    //         ->join('users', 'users.id = permission_user.user_id')
+    //         ->where('users.id', $id)
+    //         ->findAll();
 
 
-        if (empty($permissionsFound)) {
-            return $permissions;
-        }
+    //     if (empty($permissionsFound)) {
+    //         return $permissions;
+    //     }
 
-        // planificando o array retornado
-        foreach ($permissionsFound as $permission) {
-            $permissions[$permission['id']] = $permission['key'];
-        }
+    //     // planificando o array retornado
+    //     foreach ($permissionsFound as $permission) {
+    //         $permissions[$permission['id']] = $permission['key'];
+    //     }
 
-        return $permissions;
-    }
+    //     return $permissions;
+    // }
 
-    private function getPermissonsRoles($id)
-    {
-        $permissions = [];
+    // private function getPermissonsRoles($id)
+    // {
+    //     $permissions = [];
 
-        if (empty($id)) {
-            return $permissions;
-        }
+    //     if (empty($id)) {
+    //         return $permissions;
+    //     }
 
-        // pegando as chaves que são os IDs 
-        // e ajustando apara a clausula IN do SQL
-        $ids = array_keys($id);
+    //     // pegando as chaves que são os IDs 
+    //     // e ajustando apara a clausula IN do SQL
+    //     $ids = array_keys($id);
 
-        $permissionsModel = new PermissionModel();
-        $permissionsFound = $permissionsModel
-            ->select('permissions.id, permissions.key')
-            ->join('permission_role', 'permission_role.permission_id = permissions.id')
-            ->join('roles', 'roles.id = permission_role.role_id')
-            ->whereIn('roles.id', $ids)
-            ->findAll();
+    //     $permissionsModel = new PermissionModel();
+    //     $permissionsFound = $permissionsModel
+    //         ->select('permissions.id, permissions.key')
+    //         ->join('permission_role', 'permission_role.permission_id = permissions.id')
+    //         ->join('roles', 'roles.id = permission_role.role_id')
+    //         ->whereIn('roles.id', $ids)
+    //         ->findAll();
 
-        if (empty($permissionsFound)) {
-            return $permissions;
-        }
+    //     if (empty($permissionsFound)) {
+    //         return $permissions;
+    //     }
 
-        // planificando o array retornado
-        foreach ($permissionsFound as $permission) {
-            $permissions[$permission['id']] = $permission['key'];
-        }
+    //     // planificando o array retornado
+    //     foreach ($permissionsFound as $permission) {
+    //         $permissions[$permission['id']] = $permission['key'];
+    //     }
 
-        return $permissions;
-    }
+    //     return $permissions;
+    // }
 }

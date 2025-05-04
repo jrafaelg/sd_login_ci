@@ -47,6 +47,10 @@
             "Composer\\Config::disableProcessTimeout",
             "php -S localhost:8080 -t public"
         ],
+        "dev-redis": [
+            "Composer\\Config::disableProcessTimeout",
+            "docker-compose up -d && php -S localhost:8080 -t public"
+        ],
         "spark": [
             "Composer\\Config::disableProcessTimeout",
             "php spark server --host=localhost --port=8080"

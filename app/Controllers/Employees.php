@@ -270,7 +270,7 @@ class Employees extends BaseController
 
         $employeesModel = model('EmployeesModel');
 
-        $employeesCached = cache()->remember('employees', 10, function () use ($employeesModel) {
+        $employeesCached = cache()->remember('employees', 60, function () use ($employeesModel) {
             //dump('Cache created');
             return $employeesModel->asArray()->findAll();
         });

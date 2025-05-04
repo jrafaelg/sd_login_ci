@@ -21,7 +21,7 @@ class Cache extends BaseConfig
      * The name of the preferred handler that should be used. If for some reason
      * it is not available, the $backupHandler will be used in its place.
      */
-    public string $handler = 'file';
+    public string $handler = 'redis';
 
     /**
      * --------------------------------------------------------------------------
@@ -32,7 +32,7 @@ class Cache extends BaseConfig
      * unreachable. Often, 'file' is used here since the filesystem is
      * always available, though that's not always practical for the app.
      */
-    public string $backupHandler = 'dummy';
+    public string $backupHandler = 'file';
 
     /**
      * --------------------------------------------------------------------------
@@ -42,7 +42,7 @@ class Cache extends BaseConfig
      * This string is added to all cache item names to help avoid collisions
      * if you run multiple applications with the same cache engine.
      */
-    public string $prefix = '';
+    public string $prefix = 'sd_login_ci_';
 
     /**
      * --------------------------------------------------------------------------
@@ -55,7 +55,7 @@ class Cache extends BaseConfig
      * hard-coded, but may be useful to projects and modules. This will replace
      * the hard-coded value in a future release.
      */
-    public int $ttl = 60;
+    public int $ttl = 600;
 
     /**
      * --------------------------------------------------------------------------
@@ -115,10 +115,10 @@ class Cache extends BaseConfig
      */
     public array $redis = [
         'host'     => '127.0.0.1',
-        'password' => null,
+        'password' => 123456,
         'port'     => 6379,
-        'timeout'  => 0,
-        'database' => 0,
+        'timeout'  => 30,
+        'database' => 1,
     ];
 
     /**

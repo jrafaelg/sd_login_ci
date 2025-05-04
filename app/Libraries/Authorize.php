@@ -8,20 +8,35 @@ use App\Models\RoleModel;
 class Authorize
 {
 
+    private $ttl = 60; // 1 minute
 
     public function __construct()
     {
-        // Load the session library
-        //$this->session = \Config\Services::session();
+
+        //$this->ttl = config('Cache')->ttl ?? 60; // 1 minute
+        $this->ttl = (int) env('cache.ttl', 60); // 1 minute
+
     }
 
-    public function can($ability)
+    public function getLogedUserId()
+    {
+        // get the logged-in user id
+        return getUser()['id'] ?? 0;
+    }
+
+    /**
+     * Check if the user has the required permission or role.
+     * @param string|array $ability
+     * @return bool
+     */
+    public function can($ability): bool
     {
 
         if (empty($ability)) {
             return false;
         }
 
+        // transformando em array, caso não seja
         if (!is_array($ability)) {
             $ability = [$ability];
         }
@@ -29,26 +44,20 @@ class Authorize
         // colocando todas em minúsculo
         $ability = array_map('strtolower', $ability);
 
-        // roles pode ser vazia, mas precisa estar definida, caso contrário
-        // o usuário não está logado
-        if (!session()->has('roles')) {
+        // Check if the user is logged in
+        $user_id = $this->getLogedUserId() ?? null;
+        if (empty($user_id)) {
             return false;
         }
 
-        $roles = session()->get('roles');
+        $roles = $this->getRoles($user_id);
 
         // se o usuário tem a role admin, ele pode tudo
         if (in_array('admin', $roles)) {
             return true;
         }
 
-        // permissions pode ser vazia, mas precisa estar definida, caso contrário
-        // o usuário não está logado
-        if (!session()->has('permissions')) {
-            return false;
-        }
-
-        $permissions = session()->get('permissions');
+        $permissions = $this->getPermissions($user_id);
 
         // $ability é um array, então vericamos com array_intersect
         // se existe algum elemento em comum entre $ability e $permissions
@@ -59,38 +68,59 @@ class Authorize
         return false;
     }
 
-    public function hasPermission($permission)
+    /**
+     * Check if the user has the required permission.
+     * @param string $permission
+     * @return bool
+     */
+    public function hasPermission($permission): bool
     {
         // Check if the user has the required permission
-        $permissions = session()->get('permissions');
+        $permissions = $this->getPermissions();
         return !empty($permissions) && in_array($permission, $permissions);
     }
 
-    public function hasRole($role)
+    /**
+     * Check if the user has the required role.
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole($role): bool
     {
         // Check if the user has the required role
-        $roles = session()->get('roles');
+        $roles = $this->getRoles();
         return !empty($roles) && in_array($role, $roles);
     }
 
 
-    public function getRolesByUser(?int $user_id): array
+    /**
+     * Get roles by user ID
+     * @param int|null $user_id se null, pega o usuário logado
+     * @return array
+     */
+    public function getRoles(?int $user_id = null): array
     {
 
         $roles = [];
+
+        $user_id = $user_id ?? $this->getLogedUserId() ?? null;
 
         if (empty($user_id)) {
             return $roles;
         }
 
-        $rolesModel = new RoleModel();
-        $rolesFound = $rolesModel
-            ->select('roles.id, roles.key')
-            ->join('role_user', 'role_user.role_id = roles.id')
-            ->join('users', 'users.id = role_user.user_id')
-            ->where('users.id', $user_id)
-            ->findAll();
+        $rolesFound = cache()->remember('roles_user_' . $user_id, $this->ttl, function () use ($user_id) {
+            $rolesFound = model(RoleModel::class)
+                ->select('roles.id, roles.key')
+                ->join('role_user', 'role_user.role_id = roles.id')
+                ->join('users', 'users.id = role_user.user_id')
+                ->where('users.id', $user_id)
+                ->findAll();
 
+            return $rolesFound;
+        });
+
+        // se não encontrou nenhuma role, retorna vazio
         if (empty($rolesFound)) {
             return $roles;
         }
@@ -103,23 +133,31 @@ class Authorize
         return $roles;
     }
 
+    /**
+     * * Get permissions by user ID
+     * @param int|null $user_id se null, pega o usuário logado
+     * @return array
+     */
     public function getPermissionsByUser(?int $user_id = null): array
     {
 
         $permissions = [];
 
+        $user_id = $user_id ?? $this->getLogedUserId() ?? null;
+
         if (empty($user_id)) {
             return $permissions;
         }
 
-        $permissionsUserModel = new PermissionModel();
-        $permissionsFound = $permissionsUserModel
-            ->select('permissions.id, permissions.key')
-            ->join('permission_user', 'permission_user.permission_id = permissions.id')
-            ->join('users', 'users.id = permission_user.user_id')
-            ->where('users.id', $user_id)
-            ->findAll();
-
+        $permissionsFound = cache()->remember('permissions_user_' . $user_id, $this->ttl, function () use ($user_id) {
+            $permissionsFound = model(PermissionModel::class)
+                ->select('permissions.id, permissions.key')
+                ->join('permission_user', 'permission_user.permission_id = permissions.id')
+                ->join('users', 'users.id = permission_user.user_id')
+                ->where('users.id', $user_id)
+                ->findAll();
+            return $permissionsFound;
+        });
 
         if (empty($permissionsFound)) {
             return $permissions;
@@ -133,6 +171,11 @@ class Authorize
         return $permissions;
     }
 
+    /**
+     * Get permissions by roles IDs
+     * @param array $roles_ids se null, retorna vazio
+     * @return array
+     */
     public function getPermissonsByRoles(array $roles_ids): array
     {
         $permissions = [];
@@ -141,17 +184,22 @@ class Authorize
             return $permissions;
         }
 
+        // get the logged in user ID
+        $user_id = $this->getLogedUserId() ?? 0;
+
         // pegando as chaves que são os IDs 
         // e ajustando apara a clausula IN do SQL
         $roles_keys = array_keys($roles_ids);
 
-        $permissionsModel = new PermissionModel();
-        $permissionsFound = $permissionsModel
-            ->select('permissions.id, permissions.key')
-            ->join('permission_role', 'permission_role.permission_id = permissions.id')
-            ->join('roles', 'roles.id = permission_role.role_id')
-            ->whereIn('roles.id', $roles_keys)
-            ->findAll();
+        $permissionsFound = cache()->remember('permissions_roles_' . $user_id, $this->ttl, function () use ($roles_keys) {
+            $permissionsFound = model(PermissionModel::class)
+                ->select('permissions.id, permissions.key')
+                ->join('permission_role', 'permission_role.permission_id = permissions.id')
+                ->join('roles', 'roles.id = permission_role.role_id')
+                ->whereIn('roles.id', $roles_keys)
+                ->findAll();
+            return $permissionsFound;
+        });
 
         if (empty($permissionsFound)) {
             return $permissions;
@@ -165,23 +213,39 @@ class Authorize
         return $permissions;
     }
 
+    /**
+     * Get permissions by user ID and your roles
+     * @param int|null $user_id se null, pega o usuário logado
+     * @return array
+     */
     public function getPermissions(?int $user_id = null): array
     {
 
         $permissions = [];
 
+        $user_id = $user_id ?? $this->getLogedUserId() ?? null;
+
         if (empty($user_id)) {
             return $permissions;
         }
 
-        $roles = $this->getRolesByUser($user_id);
+        // $permissions = cache()->remember('permissions_' . $user_id, $this->ttl, function () use ($user_id) {
 
+        //     $permissionsUser = $this->getPermissionsByUser($user_id);
+
+        //     $roles = $this->getRoles($user_id);
+
+        //     $permissionsRoles = $this->getPermissonsByRoles($roles);
+
+        //     return [...$permissionsUser, ...$permissionsRoles];
+        // });
 
         $permissionsUser = $this->getPermissionsByUser($user_id);
 
+        $roles = $this->getRoles($user_id);
+
         $permissionsRoles = $this->getPermissonsByRoles($roles);
 
-
-        return $permissions =  [...$permissionsUser, ...$permissionsRoles];
+        return $permissions = [...$permissionsUser, ...$permissionsRoles];
     }
 }

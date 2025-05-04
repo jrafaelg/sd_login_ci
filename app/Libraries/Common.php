@@ -66,9 +66,10 @@ if (! function_exists('getUser')) {
      *
      * @return array|object|null
      */
-    function getUser()
+    function getUser(): array|object|null
     {
-        return session()->get('user');
+        $auth = service('auth');
+        return $auth->getUser();
     }
 }
 
@@ -78,9 +79,11 @@ if (! function_exists('getPermissions')) {
      *
      * @return array|object|null
      */
-    function getPermissions()
+    function getPermissions(): array|object|null
     {
-        return session()->get('permissions');
+        $authorize = service('authorize');
+
+        return $authorize->getPermissions();
     }
 }
 
@@ -92,52 +95,23 @@ if (! function_exists('getRoles')) {
      */
     function getRoles()
     {
-        return session()->get('roles');
+        $authorize = service('authorize');
+
+        return $authorize->getRoles();
     }
 }
 
-if (! function_exists('cans')) {
+if (! function_exists('isLoggedIn')) {
     /**
-     * check if user can do something
+     * Check if user is logged in
      *
-     * @return bolean
+     * @return bool
      */
-    function cans($ability)
+    function isLoggedIn(): bool
     {
+        $auth = service('auth');
 
-
-        if (is_null($ability)) {
-            return false;
-        }
-
-        if (!is_array($ability)) {
-            $ability = [$ability];
-        }
-
-        // colocando todas em minúsculo
-        $ability = array_map('strtolower', $ability);
-
-        if (!session()->has('roles')) {
-            return false;
-        }
-
-        $roles = session()->get('roles');
-
-        if (in_array('admin', $roles)) {
-            return true;
-        }
-
-        if (!session()->has('permissions')) {
-            return false;
-        }
-
-        $permissions = session()->get('permissions');
-
-        // $ability é um array, então vericamos com array_intersect
-        // se existe algum elemento em comum entre $ability e $permissions
-        if (count(array_intersect($ability, $permissions)) >= 1) {
-            return true;
-        }
+        return $auth->isLoggedIn();
     }
 }
 
@@ -147,7 +121,7 @@ if (! function_exists('can')) {
      *
      * @return bolean
      */
-    function can($ability)
+    function can($ability): bool
     {
         $authorize = service('authorize');
 
