@@ -258,6 +258,7 @@ class Login extends BaseController
         unset($userFound->password);
         session()->set('user', (array)$userFound);
 
+
         //dd($userFound);
 
         $info = [
@@ -267,6 +268,8 @@ class Login extends BaseController
         ];
 
         log_message('info', 'Login: User {id} - {username} logged into the system from {ip_address}', $info);
+
+        service('auth')->generateSessionUid();
 
         //$authorize = service('authorize');
 

@@ -42,4 +42,19 @@ class Auth
         // Get the logged-in user
         return session()->get('user');
     }
+
+    public function generateSessionUid(): void
+    {
+        // Generate a unique session ID for the user
+        $rand = random_int(1000, 99999999);;
+        $userId = $this->getUser()['id'] ?? 0;
+        $sessionUid = md5($rand . $userId);
+        session()->set('session_uid', $sessionUid);
+    }
+
+    public function getSessionUid()
+    {
+        // Get the session UID
+        return session()->get('session_uid');
+    }
 }

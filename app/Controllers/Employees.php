@@ -171,10 +171,12 @@ class Employees extends BaseController
         $employeesModel = model('EmployeesModel');
 
         if ($employeesModel->delete($id)) {
+            // Clear the cache for employees
+            cache()->delete('employees');
             return redirect()->to('/employees')->with('success', 'Employee deleted successfully');
-        } else {
-            return redirect()->back()->with('error', 'Failed to delete employee');
         }
+
+        return redirect()->back()->with('error', 'Failed to delete employee');
     }
 
     public function remove()
@@ -184,10 +186,12 @@ class Employees extends BaseController
         $employeesModel = model('EmployeesModel');
 
         if ($employeesModel->delete($id)) {
+            // Clear the cache for employees
+            cache()->delete('employees');
             return redirect()->to('/employees')->with('success', 'Employee deleted successfully');
-        } else {
-            return redirect()->back()->with('error', 'Failed to delete employee');
         }
+
+        return redirect()->back()->with('error', 'Failed to delete employee');
     }
 
     public function validateData1($data, $rules)
@@ -267,6 +271,9 @@ class Employees extends BaseController
         $data = [
             'title'     => 'Employees Page',
         ];
+
+        //dump(session_id());
+        //dd(session()->get());
 
         $employeesModel = model('EmployeesModel');
 

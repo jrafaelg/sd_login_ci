@@ -32,13 +32,15 @@ class Auth implements FilterInterface
         // Check if the user is logged in
         // If not, redirect to the login page
         if (!$auth->isLoggedIn()) {
-            return redirect()->to('/login');
+            //return redirect()->to('login');
+            return redirect()->route('login');
         }
 
         // Check if the user has verified their OTP
         // If not, redirect to the logout page
         if (!$auth->checkOtp()) {
-            return redirect()->to('login/logout');
+            //return redirect()->to('login/logout');
+            return redirect()->route('logout');
         }
     }
 

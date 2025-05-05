@@ -9,13 +9,14 @@ class Authorize
 {
 
     private $ttl = 60; // 1 minute
+    private $session_uid = null;
 
     public function __construct()
     {
 
         //$this->ttl = config('Cache')->ttl ?? 60; // 1 minute
         $this->ttl = (int) env('cache.ttl', 60); // 1 minute
-
+        $this->session_uid = service('auth')->getSessionUid() ?? null;
     }
 
     public function getLogedUserId()

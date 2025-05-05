@@ -128,3 +128,17 @@ if (! function_exists('can')) {
         return $authorize->can($ability);
     }
 }
+
+if (! function_exists('getSessionUid')) {
+    /**
+     * check if user can do something
+     *
+     * @return string
+     */
+    function getSessionUid(): string
+    {
+        $service = service('auth');
+
+        return $service->getSessionUid();
+    }
+}

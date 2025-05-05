@@ -34,17 +34,17 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
 
     //employees
     $routes->get('employees', [Employees::class, 'index'], ['as' => 'employees.index']);
-    $routes->get('employees/show/(:segment)', [Employees::class, 'show'], ['filter' => 'authorize:employees.view']);
+    $routes->get('employees/show/(:segment)', [Employees::class, 'show'], ['filter' => 'authorize:employee.view']);
     $routes->get('employees/edit/(:segment)', [Employees::class, 'edit']);
     $routes->post('employees/update', [Employees::class, 'update']);
-    $routes->get('employees/delete/(:segment)', [Employees::class, 'delete'], ['filter' => 'authorize:employees.delete']);
+    $routes->get('employees/delete/(:segment)', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
     $routes->post('employees/delete', [Employees::class, 'remove']);
     $routes->get('employees/new', [Employees::class, 'new']);
     $routes->post('employees/new', [Employees::class, 'create']);
 
     //posts
-    $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index'], ['filter' => 'authorize:posts.view']);
-    $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new'], ['filter' => 'authorize:posts.add']);
+    $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index', 'filter' => 'authorize:post.view']);
+    $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
 });
 
 
