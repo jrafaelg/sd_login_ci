@@ -45,6 +45,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     //posts
     $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index', 'filter' => 'authorize:post.view']);
     $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
+    $routes->get('posts/show/(:segment)', [Posts::class, 'show'], ['as' => 'posts.show', 'filter' => 'authorize:post.view']);
 });
 
 

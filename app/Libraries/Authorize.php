@@ -38,9 +38,7 @@ class Authorize
         }
 
         // transformando em array, caso não seja
-        if (!is_array($ability)) {
-            $ability = [$ability];
-        }
+        $ability = is_array($ability) ? $ability : [$ability];
 
         // colocando todas em minúsculo
         $ability = array_map('strtolower', $ability);
@@ -188,7 +186,7 @@ class Authorize
         // get the logged in user ID
         $user_id = $this->getLogedUserId() ?? 0;
 
-        // pegando as chaves que são os IDs 
+        // pegando as chaves que são os IDs
         // e ajustando apara a clausula IN do SQL
         $roles_keys = array_keys($roles_ids);
 

@@ -8,9 +8,14 @@ use CodeIgniter\HTTP\ResponseInterface;
 class Posts extends BaseController
 {
 
+    private $ttl = 60;
+
     public function __construct()
     {
+        //https://clouddevs.com/codeigniter/work-with-dates-and-times/
+        //helper(‘date’)
         helper('form');
+        $this->ttl = (int) env('cache.ttl', 60); // 1 minute
     }
 
     public function index()
@@ -19,11 +24,13 @@ class Posts extends BaseController
             'title' => 'Posts list',
         ];
 
-        $postsModel = model('PostsModel');
-
-        $postsCached = cache()->remember('posts', 10, function () use ($postsModel) {
-            //dump('Cache created');
-            return $postsModel->asArray()->findAll();
+        $postsCached = cache()->remember('posts', $this->ttl, function () {
+            $postsModel = model('PostsModel')
+                ->select('posts.*, users.id, users.username')
+                ->join('users', 'users.id = posts.user_id')
+                ->asArray()
+                ->findAll();
+            return $postsModel; //->asArray()->findAll();
         });
 
         $data['posts'] = $postsCached;
