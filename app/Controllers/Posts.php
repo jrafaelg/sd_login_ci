@@ -13,8 +13,8 @@ class Posts extends BaseController
     public function __construct()
     {
         //https://clouddevs.com/codeigniter/work-with-dates-and-times/
-        //helper(‘date’)
-        helper('form');
+        helper('date');
+        //helper('form');
         $this->ttl = (int) env('cache.ttl', 60); // 1 minute
     }
 
