@@ -10,10 +10,12 @@ class Posts extends BaseController
 
     private $ttl = 60;
 
+    //protected $helpers = ['date', 'form'];
+
     public function __construct()
     {
         //https://clouddevs.com/codeigniter/work-with-dates-and-times/
-        helper('date');
+        //helper('date');
         //helper('form');
         $this->ttl = (int) env('cache.ttl', 60); // 1 minute
     }
