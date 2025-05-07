@@ -4,13 +4,14 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\I18n\Time;
 
 class Posts extends BaseController
 {
 
     private $ttl = 60;
 
-    //protected $helpers = ['date', 'form'];
+    protected $helpers = ['date', 'form'];
 
     public function __construct()
     {

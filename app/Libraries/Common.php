@@ -142,3 +142,18 @@ if (! function_exists('getSessionUid')) {
         return $service->getSessionUid();
     }
 }
+
+if (! function_exists('dateTimeBrFormat')) {
+
+    /**
+     * check if user can do something
+     *
+     * @return string
+     */
+    function dateTimeBrFormat(): string
+    {
+        $service = service('auth');
+
+        return $service->getSessionId();
+    }
+}
