@@ -19,6 +19,7 @@ class Posts extends BaseController
         //helper('date');
         //helper('form');
         $this->ttl = (int) env('cache.ttl', 60); // 1 minute
+        $this->ttl = 1; // 1 second
     }
 
     public function index()

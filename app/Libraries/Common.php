@@ -1,5 +1,26 @@
 <?php
 
+/**
+ * Common helper functions and constants for the application.
+ *
+ * @package App\Helpers
+ */
+
+/**
+ * --------------------------------------------------------------------------
+ * CONSTANTS
+ * --------------------------------------------------------------------------
+ */
+
+defined('DATE_BR_FORMAT') || define('DATE_BR_FORMAT', 'dd/MM/Y');
+defined('TIME_BR_FORMAT') || define('TIME_BR_FORMAT', 'HH:mm');
+defined('DATE_TIME_BR_FORMAT') || define('DATE_TIME_BR_FORMAT', DATE_BR_FORMAT . ' ' . TIME_BR_FORMAT);
+
+defined('DATE_DATABASE_FORMAT') || define('DATE_DATABASE_FORMAT', 'yyyy-mm-dd');
+defined('TIME_DATABASE_FORMAT') || define('TIME_DATABASE_FORMAT', 'HH:i:ss');
+defined('DATE_TIME_DATABASE_FORMAT') || define('DATE_TIME_DATABASE_FORMAT', DATE_DATABASE_FORMAT . ' ' . TIME_DATABASE_FORMAT);
+
+
 if (! function_exists('dd')) {
     /**
      * dump and die
@@ -143,17 +164,40 @@ if (! function_exists('getSessionUid')) {
     }
 }
 
-if (! function_exists('dateTimeBrFormat')) {
 
+
+if (! function_exists('parseDate')) {
     /**
-     * check if user can do something
+     * Parse date from string to DateTime object
+     *
+     * @param string $date
+     * @param string $format
+     *
+     * @return \CodeIgniter\I18n\Time|false
+     */
+    function parseDate(string $date, string $format = 'Y-m-d H:i:s')
+    {
+        $dateTime = \CodeIgniter\I18n\Time::parse($date, $format);
+
+        if (!$dateTime) {
+            return false;
+        }
+
+        return $dateTime;
+    }
+}
+
+if (! function_exists('formatDate')) {
+    /**
+     * Format date from DateTime object to string
+     *
+     * @param \CodeIgniter\I18n\Time $dateTime
+     * @param string $format
      *
      * @return string
      */
-    function dateTimeBrFormat(): string
+    function formatDate(\CodeIgniter\I18n\Time $dateTime, string $format = 'Y-m-d H:i:s'): string
     {
-        $service = service('auth');
-
-        return $service->getSessionId();
+        return $dateTime->format($format);
     }
 }
