@@ -46,7 +46,7 @@
                                         <td><?= esc($employee['name']) ?></td>
                                         <td><?= esc($employee['address']) ?></td>
                                         <td><?= esc($employee['salary']) ?></td>
-                                        <td>
+                                        <td class="text-center align-middle">
                                             <?php if (can('employee.view')): ?>
                                                 <?= view_cell('Button::view', ['id' => $employee['id'], 'title' => 'View employee', 'controller' => 'Employees', 'method' => 'show']) ?>
                                             <?php endif ?>
@@ -56,11 +56,11 @@
 
                                             <?php if (can('employee.delete')): ?>
                                                 <?= view_cell('Button::del', ['id' => $employee['id'], 'title' => 'Delete employee', 'controller' => 'employees', 'method' => 'delete']) ?>
-                                                <form action="<?= url_to('Employees::delete') ?>" id="form<?= $employee['id'] ?>" method="POST" accept-charset="utf-8">
+                                                <!-- <form action="<?= url_to('Employees::delete') ?>" id="form<?= $employee['id'] ?>" method="POST" accept-charset="utf-8">
                                                     <?= csrf_field() ?>
                                                     <input type="hidden" name="id" value="<?= $employee['id'] ?>">
-                                                    <!-- <button type="submit" class="btn btn-outline-danger btn-sm" id="<?= $employee['id'] ?>">Delete</button> -->
-                                                </form>
+                                                </form> -->
+                                                <?= view_cell('Form::del', ['id' => $employee['id'], 'title' => 'Delete employee', 'controller' => 'employees', 'method' => 'delete']) ?>
                                             <?php endif ?>
 
                                             <?php if (!can('employee.delete')): ?>

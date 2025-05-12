@@ -21,7 +21,7 @@ class Button
 
         $controller = ucfirst($param['controller']) ?? '';
         $method = $param['method'] ?? 'delete';
-        $id = $param['id'] ?? 0;
+        $id = $controller . $param['id'] ?? 0;
 
         $target = $controller . '::' . $method;
 

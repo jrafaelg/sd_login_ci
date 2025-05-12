@@ -19,7 +19,6 @@ $('#confirmDelete').click(function() {
 
     // handle deletion here
     var id = $('#deleteModal').data('id');
-    console.log('form'+id);
 
     // submit the form
     $('#form'+id).submit();
