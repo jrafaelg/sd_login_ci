@@ -48,21 +48,28 @@
                                         <td><?= esc($employee['salary']) ?></td>
                                         <td>
                                             <?php if (can('employee.view')): ?>
-                                                <a href="<?= url_to('Employees::show', $employee['id']) ?>" class="me-2" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>
+                                                <?= view_cell('Button::view', ['id' => $employee['id'], 'title' => 'View employee', 'controller' => 'Employees', 'method' => 'show']) ?>
                                             <?php endif ?>
                                             <?php if (can('employee.edit')): ?>
-                                                <a href="<?= url_to('Employees::edit', $employee['id']) ?>" class="me-2" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>
+                                                <?= view_cell('Button::edit', ['id' => $employee['id'], 'title' => 'Edit employee', 'controller' => 'Employees', 'method' => 'edit']) ?>
                                             <?php endif ?>
+
                                             <?php if (can('employee.delete')): ?>
-                                                <a href="<?= url_to('Employees::delete', $employee['id']) ?>" class="me-2" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>
+                                                <?= view_cell('Button::del', ['id' => $employee['id'], 'title' => 'Delete employee', 'controller' => 'employees', 'method' => 'delete']) ?>
+                                                <form action="<?= url_to('Employees::delete') ?>" id="form<?= $employee['id'] ?>" method="POST" accept-charset="utf-8">
+                                                    <?= csrf_field() ?>
+                                                    <input type="hidden" name="id" value="<?= $employee['id'] ?>">
+                                                    <!-- <button type="submit" class="btn btn-outline-danger btn-sm" id="<?= $employee['id'] ?>">Delete</button> -->
+                                                </form>
                                             <?php endif ?>
-                                            <!-- <a href="<?= url_to('Employees::show', $employee['id']) ?>" class="btn btn-outline-primary btn-sm">Show</a>
-                                            <a href="<?= url_to('Employees::edit', $employee['id']) ?>" class="btn btn-outline-primary btn-sm">Edit</a>
-                                            <form action="<?= url_to('Employees::delete', $employee['id']) ?>" method="post" class="d-inline">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
-                                            </form> -->
+
+                                            <?php if (!can('employee.delete')): ?>
+                                                <form action="<?= url_to('Employees::delete', $employee['id']) ?>" id="1form<?= $employee['id'] ?>" method="get" class="d-inline">
+                                                    <?= csrf_field() ?>
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm link-danger-delete" id="<?= $employee['id'] ?>">Delete</button>
+                                                </form>
+                                            <?php endif ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

@@ -17,6 +17,10 @@
                     </p>
                 <?php endif; ?>
 
+                <?php
+                dd($_POST)
+                ?>
+
                 <p class="text-center mt-5"> <?= lang('Errors.sorryCannotFind') ?></p>
 
             </div>

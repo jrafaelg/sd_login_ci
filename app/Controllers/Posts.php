@@ -16,21 +16,20 @@ class Posts extends BaseController
     public function __construct()
     {
         //https://clouddevs.com/codeigniter/work-with-dates-and-times/
-        //helper('date');
-        //helper('form');
         $this->ttl = (int) env('cache.ttl', 60); // 1 minute
-        $this->ttl = 1; // 1 second
+
     }
 
     public function index()
     {
+
         $data = [
             'title' => 'Posts list',
         ];
 
         $postsCached = cache()->remember('posts', $this->ttl, function () {
             $postsModel = model('PostsModel')
-                ->select('posts.*, users.id, users.username')
+                ->select('posts.*, users.username')
                 ->join('users', 'users.id = posts.user_id')
                 ->asArray()
                 ->findAll();
@@ -45,5 +44,16 @@ class Posts extends BaseController
     public function new()
     {
         //
+    }
+
+    public function delete($id = null)
+    {
+        $postsModel = model('PostsModel');
+        $postsModel->delete($id);
+
+        // Remove the cache
+        cache()->delete('posts');
+
+        return redirect()->to('/posts');
     }
 }

@@ -12,12 +12,13 @@
  * --------------------------------------------------------------------------
  */
 
-defined('DATE_BR_FORMAT') || define('DATE_BR_FORMAT', 'dd/MM/Y');
-defined('TIME_BR_FORMAT') || define('TIME_BR_FORMAT', 'HH:mm');
+defined('DATE_BR_FORMAT') || define('DATE_BR_FORMAT', 'd/m/Y');
+defined('TIME_BR_FORMAT') || define('TIME_BR_FORMAT', 'H:i');
 defined('DATE_TIME_BR_FORMAT') || define('DATE_TIME_BR_FORMAT', DATE_BR_FORMAT . ' ' . TIME_BR_FORMAT);
 
-defined('DATE_DATABASE_FORMAT') || define('DATE_DATABASE_FORMAT', 'yyyy-mm-dd');
-defined('TIME_DATABASE_FORMAT') || define('TIME_DATABASE_FORMAT', 'HH:i:ss');
+//Y-m-d H:i:s
+defined('DATE_DATABASE_FORMAT') || define('DATE_DATABASE_FORMAT', 'Y-m-d');
+defined('TIME_DATABASE_FORMAT') || define('TIME_DATABASE_FORMAT', 'H:i:s');
 defined('DATE_TIME_DATABASE_FORMAT') || define('DATE_TIME_DATABASE_FORMAT', DATE_DATABASE_FORMAT . ' ' . TIME_DATABASE_FORMAT);
 
 
@@ -175,9 +176,9 @@ if (! function_exists('parseDate')) {
      *
      * @return \CodeIgniter\I18n\Time|false
      */
-    function parseDate(string $date, string $format = 'Y-m-d H:i:s')
+    function parseDate(string $date, ?string $tz = null): \CodeIgniter\I18n\Time|false
     {
-        $dateTime = \CodeIgniter\I18n\Time::parse($date, $format);
+        $dateTime = \CodeIgniter\I18n\Time::parse($date, $tz);
 
         if (!$dateTime) {
             return false;

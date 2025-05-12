@@ -24,6 +24,7 @@ $routes->get('login/checkotp', [Login::class, 'otp']);
 $routes->post('login/checkotp', [Login::class, 'checkOtp']);
 $routes->get('login/logout', [Login::class, 'logout'], ['as' => 'logout']);
 
+
 //$routes->get('login', 'AuthController\Login::login', ['as' => 'login']);
 
 $routes->group('', ['filter' => 'auth'], static function ($routes) {
@@ -37,15 +38,19 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('employees/show/(:segment)', [Employees::class, 'show'], ['filter' => 'authorize:employee.view']);
     $routes->get('employees/edit/(:segment)', [Employees::class, 'edit']);
     $routes->post('employees/update', [Employees::class, 'update']);
-    $routes->get('employees/delete/(:segment)', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
-    $routes->post('employees/delete', [Employees::class, 'remove']);
+    //$routes->get('employees/delete/(:segment)', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
+    $routes->post('employees/delete', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
     $routes->get('employees/new', [Employees::class, 'new']);
     $routes->post('employees/new', [Employees::class, 'create']);
+
+    //dd($routes);
 
     //posts
     $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index', 'filter' => 'authorize:post.view']);
     $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
     $routes->get('posts/show/(:segment)', [Posts::class, 'show'], ['as' => 'posts.show', 'filter' => 'authorize:post.view']);
+    $routes->get('posts/delete/(:segment)', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
+    $routes->get('posts/edit/(:segment)', [Posts::class, 'edit'], ['as' => 'posts.edit', 'filter' => 'authorize:post.edit']);
 });
 
 

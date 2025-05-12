@@ -8,11 +8,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link <?= url_is('employees') ? 'active' : '' ?>" href="<?= url_to('Employees::index') ?>">Employees</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link <?= url_is('posts') ? 'active' : '' ?>" href="<?= url_to('Posts::index') ?>">Posts</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= url_to('Posts::new') ?>">Create Post</a>
+                </li>
+
+
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -44,9 +50,9 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown mx-3">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?= session()->get('user')['username'] ?? 'name' ?>
+                        <?= getUser()['username'] ?? 'name' ?>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="<?= url_to('Login::logout') ?>">Logout</a>
                         <li><a class="dropdown-item" href="#">Another action</a></li>
                         <li>
@@ -55,9 +61,9 @@
                         <li><a class="dropdown-item" href="#">Something else here</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="#">Another action</a>
-                </li>
+                </li> -->
             </ul>
 
         </div>

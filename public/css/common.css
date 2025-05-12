@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+/* CSS Document */
+.link-danger-delete:hover 
+{
+    color: red;
+}
+
+.ci-fa-link, .link-edit{
+    text-decoration: none;
+}

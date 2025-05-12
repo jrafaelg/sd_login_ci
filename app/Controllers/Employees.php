@@ -13,10 +13,13 @@ use phpseclib3\Crypt\RSA;
 
 class Employees extends BaseController
 {
-    public function __construct()
-    {
-        helper('form');
-    }
+
+    protected $helpers = ['form'];
+
+    // public function __construct()
+    // {
+    //     helper('form');
+    // }
 
     public function new()
     {
@@ -99,8 +102,9 @@ class Employees extends BaseController
         $employeesModel = new EmployeesModel();
 
         try {
-
             $employeesModel->insert($data);
+            // Clear the cache for employees
+            cache()->delete('employees');
             return redirect()->to('/employees')->with('success', 'Employee created successfully')->withInput();
         } catch (\Exception $e) {
 
@@ -146,7 +150,7 @@ class Employees extends BaseController
     {
         $data = $this->request->getPost(['name', 'address', 'salary', 'cod_user', 'digital_sign']);
 
-        // Checks whether the submitted data passed the validation rules.
+        // Checks whether the submitted data passed the validtion rules.
         if (! $this->validateData($data, [
             'name'         => 'required|max_length[128]|min_length[3]',
             'address'      => 'required|max_length[5000]|min_length[10]',
@@ -166,17 +170,40 @@ class Employees extends BaseController
         }
     }
 
-    public function delete($id)
+    public function delete()
     {
+
         $employeesModel = model('EmployeesModel');
 
-        if ($employeesModel->delete($id)) {
-            // Clear the cache for employees
-            cache()->delete('employees');
-            return redirect()->to('/employees')->with('success', 'Employee deleted successfully');
+        $id = (int) $this->request->getPost('id');
+
+        if (empty($id)) {
+            return redirect()->back()->with('error', 'Failed to delete employee');
         }
 
-        return redirect()->back()->with('error', 'Failed to delete employee');
+        try {
+
+            $employeesModel->delete($id);
+
+            // Clear the cache for employees
+            cache()->delete('employees');
+
+            return redirect()->to('/employees')->with('success', 'Employee deleted successfully');
+        } catch (\Exception $e) {
+
+            // gerando o dados para o log
+            $log_data = [
+                'id' => session()->get('user')['id'],
+                'username' => session()->get('user')['username'],
+                'ip_address' => $this->request->getIPAddress(),
+                'error' => $e->getMessage(),
+            ];
+
+            // Log the error message
+            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to delete employee: {error}', $log_data);
+
+            return redirect()->back()->with('error', 'Failed to delete employee. Try again.');
+        }
     }
 
     public function remove()

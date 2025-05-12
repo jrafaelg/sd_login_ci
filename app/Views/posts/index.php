@@ -2,12 +2,6 @@
 
 <?= $this->section('content') ?>
 
-<?php
-
-use CodeIgniter\I18n\Time;
-use Config\App;
-
-?>
 
 <div class="row">
     <div class="col-md-12">
@@ -18,19 +12,11 @@ use Config\App;
             </div>
 
             <?php if (can('post.add')): ?>
-                <div class="row">
-                    <div class="d-flex justify-content-center">
-                        <a href="<?= url_to('Posts::new') ?>" class="btn btn-success pull-right ">
-                            <i class="fa fa-plus"></i> Add New Post
-                        </a>
-                    </div>
-                </div>
-
+                <?= view_cell('Button::add', ['controller' => 'posts', 'method' => 'new', 'title' => 'Add new Post']) ?>
             <?php endif ?>
 
             <?php // = $this->render('posts\test') ?: 'Fallback title'
             ?>
-
 
 
             <?php if (count($posts) <= 1): ?>
@@ -53,48 +39,39 @@ use Config\App;
 
                                 <div class="d-flex align-items-center mb-4 text-muted author-info">
                                     <span class="d-flex align-items-center me-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
-                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                        </svg>
+                                        <i class="fa-solid fa-at me-2"></i>
                                         <?= esc($post['username']) ?>
                                     </span>
 
-                                    <?php $created_at  = Time::parse($post['created_at']); ?>
+                                    <?php $created_at  = parseDate($post['created_at']); ?>
 
-                                    <span class="d-flex align-items-center" title="<?= $created_at->toLocalizedString('dd/mm/yyyy H:mm:i') ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2" viewBox="0 0 16 16">
-                                            <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"></path>
-                                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"></path>
-                                        </svg>
-
-                                        <?php
-                                        //$created_at  = Time::parse($post['created_at']);
-                                        //$time->setTimezone(app_timezone());
-                                        //echo $created_at->toLocalizedString('dd/mm/yyyy HH:mm');
-                                        //echo $time;
-                                        ?>
+                                    <span class="d-flex align-items-center" title="<?= formatDate($created_at, DATE_TIME_BR_FORMAT) ?>">
+                                        <i class="fa-regular fa-calendar me-2"></i>
                                         <?= $created_at->humanize() ?>
                                     </span>
 
-                                </div>
-
-                                <div>
-                                    <p><?= $post['created_at']; ?></p>
-                                    <p><?= $created_at->toLocalizedString('dd/MM/Y HH:mm') ?></p>
-                                    <p><?= app_timezone() ?></p>
-                                    <p><?= now(app_timezone()) ?></p>
-                                    <p><?= date(DATE_TIME_BR_FORMAT, strtotime($post['created_at'])) ?></p>
-                                    <p><?= date('d/m/Y H:i', strtotime($post['created_at'])) ?></p>
-                                    <p><?= date('m', strtotime($post['created_at'])) ?></p>
-                                    <p><?= $created_at->toLocalizedString() ?></p>
-                                    <p><?= $created_at->toDateTimeString() ?></p>
-                                    <p><?= $created_at->getTimezoneName() ?></p>
-                                    <p><?= $created_at->getLocal() ?></p>
+                                    <?php if ($post['updated_at']): ?>
+                                        <?php $updated_at  = parseDate($post['updated_at']); ?>
+                                        <span class=" d-flex align-items-center mx-2" title="last update <?= formatDate($updated_at, DATE_TIME_BR_FORMAT) ?>">
+                                            <i class="fa-regular fa-square-check me-2"></i>
+                                            <?= $updated_at->humanize() ?>
+                                        </span>
+                                    <?php endif ?>
 
                                 </div>
 
-                                <?= esc($post['contend']) ?>
+                                <div class="post-contend text-muted">
+                                    <?= esc($post['contend']) ?>
+                                </div>
+
+                                <div class="post-menu text-end">
+                                    <?php if (can('post.edit')): ?>
+                                        <?= view_cell('Button::edit', ['id' => $post['id'], 'title' => 'Edit Post', 'controller' => 'posts', 'method' => 'edit']) ?>
+                                    <?php endif ?>
+                                    <?php if (can('post.delete')): ?>
+                                        <?= view_cell('Button::del', ['id' => $post['id'], 'title' => 'Delete', 'controller' => 'posts', 'method' => 'delete']) ?>
+                                    <?php endif ?>
+                                </div>
 
                             </div>
                         <?php endforeach; ?>
