@@ -78,8 +78,10 @@
     <?= $this->render('components\navbar') ?: 'Fallback title'  ?>
 <?php endif ?>
 
+<!-- contend -->
 <div class="container" style="min-height: 90vh;">
     <?= $this->renderSection('content'); ?>
 </div>
+<!-- /contend -->
 
 <?= $this->endSection() ?>

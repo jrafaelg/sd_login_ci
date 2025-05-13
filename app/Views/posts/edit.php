@@ -8,22 +8,23 @@
         <div class="card-body p-3 p-md-4 p-xl-5">
 
             <div class="text-center mb-3">
-                <h2 class="fw-normal text-center  mb-4">Create new Post</h2>
-                <p class="text-secondary">Please fill this form and submit to add post record.</p>
+                <h2 class="fw-normal text-center  mb-4">Edit a Post</h2>
+                <p class="text-secondary">Please fill this form and submit to edit post record.</p>
             </div>
 
 
 
-            <form action="<?= url_to('Posts::new') ?>" method="post">
+            <form action="<?= url_to('Posts::update') ?>" method="post">
                 <?= csrf_field() ?>
-
+                <input type="hidden" name="id" id="id" value="<?= $post['id'] ?? 0; ?>">
+                <input type="hidden" name="user_id" id="user_id" value="<?= $post['user_id'] ?? 0; ?>">
                 <div class="row gy-2 overflow-hidden">
 
                     <div class="col-12">
                         <div class="form-floating mb-4">
                             <input type="text" name="title" id="title" placeholder="Title" required
                                 class="form-control <?= !empty(session()->getFlashdata('errors')['title']) ? 'is-invalid' : ''; ?>"
-                                value="<?= set_value('title') ?? ''; ?>">
+                                value="<?= set_value('title') ?: esc($post['title']); ?>">
                             <span class="invalid-feedback"><?= session()->getFlashdata('errors')['title'] ?? '' ?></span>
                             <label for="title">Title</label>
                         </div>
@@ -35,7 +36,7 @@
                                 class="form-control
                                 <?= !empty(session()->getFlashdata('errors')['contend']) ? 'is-invalid' : '';
                                 ?>"
-                                style="height: 200px;"><?= set_value('contend') ?? ''; ?></textarea>
+                                style="height: 200px;"><?= set_value('contend') ?: esc($post['contend']); ?></textarea>
                             <span class="invalid-feedback"><?= session()->getFlashdata('errors')['contend'] ?? '' ?></span>
                             <!-- <label for="contend">Contend</label> -->
                         </div>
@@ -65,11 +66,21 @@
                                 'class' => 'form-select form-control',
                             ];
 
-                            $selected = set_value('status') ?? '';
+                            $selected = set_value('status') ?: esc($post['status']);;
                             echo form_dropdown('status', $options, $selected, $css);
                             ?>
                             <span class="invalid-feedback"><?= session()->getFlashdata('errors')['status'] ?? '' ?></span>
                             <label for="status">Status</label>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <p class="fw-bold ">Digital signature:
+                                <span title="Digital Sign: <?= $post['digital_sign'] == TRUE ? 'VALID' : 'INVALID' ?>">
+                                    <i class="fa-solid fa-file-signature <?= $post['digital_sign'] == TRUE ? 'text-success' : 'text-danger' ?> ms-2"></i>
+                                </span>
+                            </p>
                         </div>
                     </div>
 

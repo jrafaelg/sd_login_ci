@@ -53,6 +53,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     //$routes->get('posts/delete/(:segment)', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
     $routes->post('posts/delete', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
     $routes->get('posts/edit/(:segment)', [Posts::class, 'edit'], ['as' => 'posts.edit', 'filter' => 'authorize:post.edit']);
+    $routes->post('posts/edit', [Posts::class, 'update'], ['as' => 'posts.update', 'filter' => 'authorize:post.edit']);
 });
 
 
