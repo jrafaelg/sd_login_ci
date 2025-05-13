@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 
 
-<?php //= $this->render('templates\header') ?: 'Fallback title'  
+<?php //= $this->render('templates\header') ?: 'Fallback title'
 ?>
 <div class="container" style="min-height: 90vh;">
     <div class="row justify-content-center">
@@ -15,11 +15,16 @@
                     <p class="text-center mt-5">
                         <?php var_dump($message ?? 'Not Found') ?>
                     </p>
+                    <?php
+                    echo ('_POST');
+                    dump($_POST);
+                    echo ('_GET');
+                    dump($_GET);
+                    echo ('_REQUEST');
+                    dump($_REQUEST);
+                    ?>
                 <?php endif; ?>
 
-                <?php
-                dd($_POST)
-                ?>
 
                 <p class="text-center mt-5"> <?= lang('Errors.sorryCannotFind') ?></p>
 
@@ -33,5 +38,5 @@
 </div>
 
 <?= $this->endSection() ?>
-<?php // = $this->render('templates\footer') ?: 'Fallback title'  
+<?php // = $this->render('templates\footer') ?: 'Fallback title'
 ?>

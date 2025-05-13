@@ -3,8 +3,11 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Libraries\Cipher;
+use App\Models\PostsModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\I18n\Time;
+use phpseclib3\Crypt\RSA;
 
 class Posts extends BaseController
 {
@@ -43,17 +46,143 @@ class Posts extends BaseController
 
     public function new()
     {
+        $data = [
+            'title' => 'New Post',
+        ];
+
+        return view('posts/new', $data);
         //
     }
 
-    public function delete($id = null)
+    public function create()
     {
-        $postsModel = model('PostsModel');
-        $postsModel->delete($id);
 
-        // Remove the cache
-        cache()->delete('posts');
+        $data = $this->request->getPost(['title', 'contend', 'status', 'password_sign']);
 
-        return redirect()->to('/posts');
+        $validated = $this->validateData(
+            $data,
+            [
+                'title'         => 'required|max_length[200]|min_length[3]',
+                'contend'       => 'required|max_length[5000]|min_length[10]',
+                'status'        => 'required|in_list[draft,pending,publish]',
+                'password_sign' => 'required',
+            ],
+            [
+                'title'           => [
+                    'required'    => '{field} is required',
+                    'max_length'  => '{field} cannot exceed {param} characters',
+                    'min_length'  => '{field} must be at least {param} characters long',
+                ],
+                'contend'         => [
+                    'required'    => '{field} is required',
+                    'max_length'  => '{field} cannot exceed {param} characters',
+                    'min_length'  => '{field} must be at least {param} characters long',
+                ],
+                'status'         => [
+                    'required'    => '{field} is required',
+                    'max_length'  => '{field} must be draft, pending or publish',
+                ],
+                'password_sign' => [
+                    'required'    => '{field} is required',
+                ],
+            ]
+        );
+
+        // Checks whether the submitted data passed the validation rules.
+        if (!$validated) {
+            return redirect()->back()->with('errors', $this->validator->getErrors())->withInput();
+        }
+
+
+        $deciphed_private_key = '';
+        $cipher = new Cipher();
+
+        // tentando decriptografar a chave privada
+        $deciphed_private_key = $cipher->decrypt(session()->get('user')['private_key'], $data['password_sign']);
+
+        // verificando se a chave privada foi decriptografada com sucesso
+        if (empty($deciphed_private_key)) {
+            // em caso de erro, retorna para a tela de cadastro
+            $this->validator->setError('password_sign', 'Invalid password sign.');
+            return redirect()->back()->with('errors', $this->validator->getErrors())->withInput();
+        }
+
+        // get resume form register data
+        $resume = $data['contend'] . $data['status'] . session()->get('user')['id'];
+
+        // loading the deciphed private key
+        $private = RSA::loadPrivateKey($deciphed_private_key);
+
+        // sign the resume
+        $sing = $private->sign($resume);
+        $digital_sign = base64_encode($sing);
+
+        // inserindo o código do usuário logado nos dados do post
+        $data['user_id'] = session()->get('user')['id'];
+
+        // inserindo a assinatura digital
+        $data['digital_sign'] = $digital_sign;
+
+        // instanciando o model
+        $postsModel = new PostsModel();
+
+        try {
+            $postsModel->insert($data);
+            // Clear the cache for posts
+            cache()->delete('posts');
+            return redirect()->to('/posts')->with('success', 'Post created successfully')->withInput();
+        } catch (\Exception $e) {
+
+            // gerando o dados para o log
+            $log_data = [
+                'id' => session()->get('user')['id'],
+                'username' => session()->get('user')['username'],
+                'ip_address' => $this->request->getIPAddress(),
+                'error' => $e->getMessage(),
+            ];
+
+            // Log the error message
+            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to create post: {error}', $log_data);
+
+            return redirect()->back()->with('error', 'Failed to create post. Try again.')->withInput();
+        }
+        ///
     }
+
+    public function delete()
+    {
+
+        $id = (int) $this->request->getPost('id');
+
+        if (empty($id)) {
+            return redirect()->back()->with('error', 'Failed to delete post');
+        }
+
+        try {
+            $postsModel = model('PostsModel');
+            $postsModel->delete($id);
+
+            // Remove the cache
+            cache()->delete('posts');
+
+            //return redirect()->to('/posts')->with('success', 'Post deleted successfully');
+            return redirect()->route('posts.index')->with('success', 'Post deleted successfully');
+        } catch (\Exception $e) {
+            // gerando o dados para o log
+            $log_data = [
+                'id' => session()->get('user')['id'],
+                'username' => session()->get('user')['username'],
+                'ip_address' => $this->request->getIPAddress(),
+                'error' => $e->getMessage(),
+            ];
+
+            // Log the error message
+            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to delete post: {error}', $log_data);
+
+            return redirect()->back()->with('error', 'Failed to delete post. Try again.');
+        }
+    }
+
+    //
+
 }

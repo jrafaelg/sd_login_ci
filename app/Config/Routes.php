@@ -48,8 +48,10 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     //posts
     $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index', 'filter' => 'authorize:post.view']);
     $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
+    $routes->post('posts/new', [Posts::class, 'create'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
     $routes->get('posts/show/(:segment)', [Posts::class, 'show'], ['as' => 'posts.show', 'filter' => 'authorize:post.view']);
-    $routes->get('posts/delete/(:segment)', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
+    //$routes->get('posts/delete/(:segment)', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
+    $routes->post('posts/delete', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
     $routes->get('posts/edit/(:segment)', [Posts::class, 'edit'], ['as' => 'posts.edit', 'filter' => 'authorize:post.edit']);
 });
 

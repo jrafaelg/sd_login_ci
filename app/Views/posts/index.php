@@ -61,15 +61,23 @@
                                 </div>
 
                                 <div class="post-contend text-muted">
-                                    <?= esc($post['contend']) ?>
+                                    <?= esc($post['contend'], 'raw') ?>
                                 </div>
+
+                                <!-- https://rohanyeole.com/ray-editor/ -->
+                                <!-- https://froala.com/wysiwyg-editor/examples/adjustable-height/ -->
+                                <!-- https://richtexteditor.com/ -->
 
                                 <div class="post-menu text-end">
                                     <?php if (can('post.edit')): ?>
                                         <?= view_cell('Button::edit', ['id' => $post['id'], 'title' => 'Edit Post', 'controller' => 'posts', 'method' => 'edit']) ?>
                                     <?php endif ?>
                                     <?php if (can('post.delete')): ?>
-                                        <?= view_cell('Button::del', ['id' => $post['id'], 'title' => 'Delete', 'controller' => 'posts', 'method' => 'delete']) ?>
+
+                                        <?= view_cell('Button::del', ['id' => $post['id'], 'title' => 'Delete post', 'controller' => 'posts', 'method' => 'delete']) ?>
+
+                                        <?= view_cell('Form::del', ['id' => $post['id'], 'title' => 'Delete post', 'controller' => 'posts', 'method' => 'delete']) ?>
+
                                     <?php endif ?>
                                 </div>
 
