@@ -37,13 +37,38 @@
                                 style="height: 200px;"><?= set_value('contend') ?? ''; ?></textarea>
 
                             <span class="invalid-feedback"><?= session()->getFlashdata('errors')['contend'] ?? '' ?></span>
-                            <label for="contend">Contend</label>
+                            <!-- <label for="contend">Contend</label> -->
                         </div>
                     </div>
 
                     <script>
-                        var editor = new FroalaEditor('#contend');
+                        new FroalaEditor('#contend', {
+                            height: 300,
+                            toolbarButtons: ['bold', 'italic', 'underline', 'paragraphFormat', 'fontSize', 'align', 'alignCenter', 'insertLink', 'insertImage'],
+                        })
                     </script>
+
+                    <div class="col-12">
+                        <div class="form-floating mb-4">
+                            <textarea id="contend3" name="contend3" rows="10" cols="500" placeholder="Contend"
+                                class="form-control
+                                <?= !empty(session()->getFlashdata('errors')['contend']) ? 'is-invalid' : '';
+                                ?>"
+                                style="height: 200px;"><?= set_value('contend') ?? ''; ?></textarea>
+
+                            <span class="invalid-feedback"><?= session()->getFlashdata('errors')['contend'] ?? '' ?></span>
+                        </div>
+                    </div>
+
+                    <script>
+                        var editor1cfg = {}
+                        editor1cfg.toolbar = "basic";
+                        editor1cfg.maxHTMLLength = "5000";
+                        editor1cfg.editorResizeMode = "height";
+                        var editor1 = new RichTextEditor("#contend3", editor1cfg);
+                    </script>
+
+
 
                     <div class="col-12">
                         <div class="form-floating mb-4">
