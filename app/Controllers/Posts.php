@@ -35,7 +35,7 @@ class Posts extends BaseController
             $postsModel = model('PostsModel')
                 ->select('posts.*, users.username')
                 ->join('users', 'users.id = posts.user_id')
-                ->asArray()
+                //->asArray()
                 ->findAll();
             return $postsModel; //->asArray()->findAll();
         });
@@ -173,7 +173,7 @@ class Posts extends BaseController
             // buscando o usuário criador do post
             $user = model('UserModel')
                 ->select('public_key')
-                ->where('id', $post['user_id'])
+                ->where('id', $post->user_id)
                 ->asArray()
                 ->first();
 
@@ -186,10 +186,10 @@ class Posts extends BaseController
 
             //$stored_public_key = Auth::getUser()['public_key'];
             $stored_public_key = $user['public_key'];
-            $stored_signature = $post['digital_sign'];
+            $stored_signature = $post->digital_sign;
 
             // get resume form register data
-            $resume = $post['title'] . $post['contend'] . $post['status'] . $post['user_id'];
+            $resume = $post->title . $post->contend . $post->status . $post->user_id;
 
             $public_key = RSA::loadPublicKey($stored_public_key);
 
@@ -197,7 +197,7 @@ class Posts extends BaseController
             //$check_sign = $public_key->verify($resume, $deciphed_signature) ? 'valid signature' : 'invalid signature';
             $digital_sign = $public_key->verify($resume, $deciphed_signature) ? TRUE : FALSE;
 
-            $post['digital_sign'] = $digital_sign;
+            $post->digital_sign = $digital_sign;
 
             $data['post'] = $post;
 
