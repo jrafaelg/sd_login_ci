@@ -37,4 +37,26 @@ class PostsEntity extends Entity
 
         return $this->attributes['title'];
     }
+
+    public function setTitle($title)
+    {
+        $this->attributes['title'] = ucwords($title);
+
+        return $this;
+    }
+
+
+    //     public function getCreatedAt(string $format = 'Y-m-d H:i:s')
+    //     {
+    //         // Convert to CodeIgniter\I18n\Time object
+    //         //$this->attributes['created_at'] = $this->mutateDate($this->attributes['created_at']);
+
+    //         //$timezone = $this->timezone ?? app_timezone();
+
+    //         //$this->attributes['created_at']->setTimezone($timezone);
+
+    //         //dd($this->attributes['created_at']);
+
+    //         //return $this->attributes['created_at']->format($format);
+    //     }
 }

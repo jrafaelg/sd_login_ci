@@ -15,9 +15,6 @@
                 <?= view_cell('Button::add', ['controller' => 'posts', 'method' => 'new', 'title' => 'Add new Post']) ?>
             <?php endif ?>
 
-            <?php // = $this->render('posts\test') ?: 'Fallback title'
-            ?>
-
 
             <?php if (count($posts) <= 1): ?>
 
@@ -42,6 +39,14 @@
                                         <i class="fa-solid fa-at me-2"></i>
                                         <?= esc($post->username) ?>
                                     </span>
+
+                                    <?= $post->created_at->humanize()
+                                    ?>
+
+                                    <?php
+                                    echo $post->created_at->format(DATE_TIME_BR_FORMAT)
+                                    //dd(); 
+                                    ?>
 
                                     <?php $created_at  = parseDate($post->created_at); ?>
 

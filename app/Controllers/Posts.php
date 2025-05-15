@@ -94,12 +94,12 @@ class Posts extends BaseController
             return redirect()->back()->with('errors', $this->validator->getErrors())->withInput();
         }
 
-
         $deciphed_private_key = '';
         $cipher = new Cipher();
+        $private_key = service('auth')->getUser()['private_key'];
 
         // tentando decriptografar a chave privada
-        $deciphed_private_key = $cipher->decrypt(session()->get('user')['private_key'], $data['password_sign']);
+        $deciphed_private_key = $cipher->decrypt($private_key, $data['password_sign']);
 
         // verificando se a chave privada foi decriptografada com sucesso
         if (empty($deciphed_private_key)) {
@@ -108,11 +108,14 @@ class Posts extends BaseController
             return redirect()->back()->with('errors', $this->validator->getErrors())->withInput();
         }
 
+        // instanciando a classe PostsEntity
+        $post = new \App\Entities\PostsEntity($data);
+
         // inserindo o código do usuário logado nos dados do post
-        $data['user_id'] = service('auth')->getUser()['id'];
+        $post->user_id = service('auth')->getUser()['id'];
 
         // get resume form register data
-        $resume = $data['title'] . $data['contend'] . $data['status'] . $data['user_id'];
+        $resume = $post->title . $post->contend . $post->status . $post->user_id;
 
         // loading the deciphed private key
         $private = RSA::loadPrivateKey($deciphed_private_key);
@@ -122,15 +125,18 @@ class Posts extends BaseController
         $digital_sign = base64_encode($sing);
 
         // inserindo a assinatura digital
-        $data['digital_sign'] = $digital_sign;
+        $post->digital_sign = $digital_sign;
 
         // instanciando o model
         $postsModel = new PostsModel();
 
         try {
-            $postsModel->insert($data);
+
+            $postsModel->insert($post);
+
             // Clear the cache for posts
             cache()->delete('posts');
+
             return redirect()->to('/posts')->with('success', 'Post created successfully')->withInput();
         } catch (\Exception $e) {
 
@@ -274,11 +280,18 @@ class Posts extends BaseController
             return redirect()->back()->with('errors', $this->validator->getErrors())->withInput();
         }
 
+        // instanciando a classe PostsEntity
+        $post = new \App\Entities\PostsEntity($data);
+
         // inserindo o código do usuário logado nos dados do post
-        $data['user_id'] = service('auth')->getUser()['id'];
+        $post->user_id = service('auth')->getUser()['id'];
+
+        //dump($post);
 
         // get resume form register data
-        $resume = $data['title'] . $data['contend'] . $data['status'] . $data['user_id'];
+        $resume = $post->title . $post->contend . $post->status . $post->user_id;
+
+        //dd($resume);
 
         // loading the deciphed private key
         $private = RSA::loadPrivateKey($deciphed_private_key);
@@ -288,15 +301,19 @@ class Posts extends BaseController
         $digital_sign = base64_encode($sing);
 
         // inserindo a assinatura digital
-        $data['digital_sign'] = $digital_sign;
+        $post->digital_sign = $digital_sign;
 
         // instanciando o model
         $postsModel = new PostsModel();
 
+
         try {
-            $postsModel->save($data);
+
+            $postsModel->save($post);
+
             // Clear the cache for posts
             cache()->delete('posts');
+
             return redirect()->to('/posts')->with('success', 'Post update successfully')->withInput();
         } catch (\Exception $e) {
 

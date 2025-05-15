@@ -165,6 +165,53 @@ if (! function_exists('getSessionUid')) {
     }
 }
 
+if (! function_exists('formatCnpjCpf')) {
+    /**
+     * check if user can do something
+     *
+     * @return string
+     */
+    function formatCnpjCpf($value)
+    {
+
+        // Check if the value is empty
+        if (empty($value)) {
+            return '';
+        }
+
+        // Remove all non-aphanumeric characters
+        $cnpj_cpf = preg_replace("/\W|_/", '', $value);
+
+        // $cnpj_cpf = str_split($cnpj_cpf);
+
+        // [$a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k] = $cnpj_cpf;
+
+        // $p1 = $a . $b . $c;
+        // $p2 = $d . $e . $f;
+        // $p3 = $g . $h . $i;
+        // $p4 = $j . $k;
+
+        // dump($p1);
+        // dump($p2);
+        // dump($p3);
+        // dump($p4);
+
+        if (strlen($cnpj_cpf) <= 11) {
+
+            // prenchendo com zeros a esquerda
+            $cnpj_cpf = sprintf("%011s", $cnpj_cpf);
+            //$cnpj_cpf = str_pad((string)$cnpj_cpf, 11, "0", STR_PAD_LEFT);
+
+            return preg_replace("/(\w{3})(\w{3})(\w{3})(\w{2})/", "\$1.\$2.\$3-\$4", $cnpj_cpf);
+        }
+
+        // prenchendo com zeros a esquerda
+        $cnpj_cpf = sprintf("%014s", $cnpj_cpf);
+
+        return preg_replace("/(\w{2})(\w{3})(\w{3})(\w{4})(\w{2})/", "\$1.\$2.\$3/\$4-\$5", $cnpj_cpf);
+    }
+}
+
 
 
 if (! function_exists('parseDate')) {
