@@ -332,6 +332,70 @@ class Posts extends BaseController
         }
     }
 
+    public function show(?int $id)
+    {
+        $data = [
+            'title' => 'Post Details',
+        ];
+
+        if (empty($id)) {
+            return redirect()->back()->with('error', 'Failed to retirve post');
+        }
+
+        try {
+
+            // instanciando o model
+            $post = model('PostsModel')
+                ->select('posts.*, users.username')
+                ->join('users', 'users.id = posts.user_id')
+                ->find($id);
+
+            if (empty($post)) {
+                return redirect()->back()->with('error', 'Post not found');
+            }
+
+            // buscando o usuário criador do post
+            $user = model('UserModel')
+                ->select('public_key')
+                ->where('id', $post->user_id)
+                ->asArray()
+                ->first();
+
+            // pegado a chave pública do criador do post
+            $stored_public_key = $user['public_key'];
+            $stored_signature = $post->digital_sign;
+
+            // get resume form register data
+            $resume = $post->title . $post->contend . $post->status . $post->user_id;
+
+            $public_key = RSA::loadPublicKey($stored_public_key);
+
+            $deciphed_signature = base64_decode($stored_signature);
+            $digital_sign = $public_key->verify($resume, $deciphed_signature) ? TRUE : FALSE;
+
+            $post->digital_sign = $digital_sign;
+
+            $data['post'] = $post;
+
+            return view('posts/show', $data);
+        } catch (\Exception $e) {
+
+            // gerando o dados para o log
+            $log_data = [
+                'id' => session()->get('user')['id'],
+                'username' => session()->get('user')['username'],
+                'ip_address' => $this->request->getIPAddress(),
+                'error' => $e->getMessage(),
+            ];
+
+            // Log the error message
+            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to retrive post: {error}', $log_data);
+
+            return redirect()->back()->with('error', 'Failed to retrive post. Try again.')->withInput();
+        }
+        //
+    }
+
     public function delete()
     {
 

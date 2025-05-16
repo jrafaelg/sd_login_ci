@@ -2,7 +2,6 @@
 
 <?= $this->section('content') ?>
 
-
 <div class="row justify-content-center">
     <div class="col-12 col-sm-10 col-md-8 ">
         <div class="card-body p-3 p-md-4 p-xl-5">

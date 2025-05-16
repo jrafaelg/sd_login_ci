@@ -28,6 +28,7 @@ $routes->get('login/logout', [Login::class, 'logout'], ['as' => 'logout']);
 //$routes->get('login', 'AuthController\Login::login', ['as' => 'login']);
 
 $routes->group('', ['filter' => 'auth'], static function ($routes) {
+
     $routes->get('news', [News::class, 'index'], ['as' => 'news']);
     $routes->get('news/new', [News::class, 'new']);
     $routes->post('news', [News::class, 'create']);
@@ -43,8 +44,6 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('employees/new', [Employees::class, 'new']);
     $routes->post('employees/new', [Employees::class, 'create']);
 
-    //dd($routes);
-
     //posts
     $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index', 'filter' => 'authorize:post.view']);
     $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
@@ -54,6 +53,9 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('posts/delete', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
     $routes->get('posts/edit/(:segment)', [Posts::class, 'edit'], ['as' => 'posts.edit', 'filter' => 'authorize:post.edit']);
     $routes->post('posts/edit', [Posts::class, 'update'], ['as' => 'posts.update', 'filter' => 'authorize:post.edit']);
+    $routes->get('posts/show/(:segment)', [Posts::class, 'show'], ['filter' => 'authorize:post.view']);
+
+    //
 });
 
 

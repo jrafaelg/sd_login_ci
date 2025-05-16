@@ -35,31 +35,19 @@
                                 </h1>
 
                                 <div class="d-flex align-items-center mb-4 text-muted author-info">
-                                    <span class="d-flex align-items-center me-3">
-                                        <i class="fa-solid fa-at me-2"></i>
-                                        <?= esc($post->username) ?>
+                                    <span class="me-3">
+                                        <i class="fa-solid fa-at me-1 align-middle"></i> <?= esc($post->username) ?>
                                     </span>
 
-                                    <?= $post->created_at->humanize()
-                                    ?>
-
-                                    <?php
-                                    echo $post->created_at->format(DATE_TIME_BR_FORMAT)
-                                    //dd(); 
-                                    ?>
-
-                                    <?php $created_at  = parseDate($post->created_at); ?>
-
-                                    <span class="d-flex align-items-center" title="<?= formatDate($created_at, DATE_TIME_BR_FORMAT) ?>">
-                                        <i class="fa-regular fa-calendar me-2"></i>
-                                        <?= $created_at->humanize() ?>
+                                    <span class="align-items-center me-3" title="<?= $post->created_at->format(DATE_TIME_BR_FORMAT) ?>">
+                                        <i class="fa-regular fa-calendar me-1"></i>
+                                        <?= $post->created_at->humanize() ?>
                                     </span>
 
                                     <?php if ($post->updated_at): ?>
-                                        <?php $updated_at  = parseDate($post->updated_at); ?>
-                                        <span class=" d-flex align-items-center mx-2" title="last update <?= formatDate($updated_at, DATE_TIME_BR_FORMAT) ?>">
-                                            <i class="fa-regular fa-square-check me-2"></i>
-                                            <?= $updated_at->humanize() ?>
+                                        <span class=" d-flex align-items-center me-3" title="last update <?= $post->updated_at->format(DATE_TIME_BR_FORMAT) ?>">
+                                            <i class="fa-regular fa-square-check me-1"></i>
+                                            <?= $post->updated_at->humanize() ?>
                                         </span>
                                     <?php endif ?>
 
@@ -74,16 +62,16 @@
                                 <!-- https://richtexteditor.com/ -->
 
                                 <div class="post-menu text-end">
+
                                     <?php if (can('post.edit')): ?>
                                         <?= view_cell('Button::edit', ['id' => $post->id, 'title' => 'Edit Post', 'controller' => 'posts', 'method' => 'edit']) ?>
                                     <?php endif ?>
+
                                     <?php if (can('post.delete')): ?>
-
                                         <?= view_cell('Button::del', ['id' => $post->id, 'title' => 'Delete post', 'controller' => 'posts', 'method' => 'delete']) ?>
-
                                         <?= view_cell('Form::del', ['id' => $post->id, 'title' => 'Delete post', 'controller' => 'posts', 'method' => 'delete']) ?>
-
                                     <?php endif ?>
+
                                 </div>
 
                             </div>
