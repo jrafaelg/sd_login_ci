@@ -142,8 +142,8 @@ class Posts extends BaseController
 
             // gerando o dados para o log
             $log_data = [
-                'id' => session()->get('user')['id'],
-                'username' => session()->get('user')['username'],
+                'id' => service('auth')->getUser()['id'],
+                'username' => service('auth')->getUser()['username'],
                 'ip_address' => $this->request->getIPAddress(),
                 'error' => $e->getMessage(),
             ];
@@ -163,7 +163,7 @@ class Posts extends BaseController
         ];
 
         if (empty($id)) {
-            return redirect()->back()->with('error', 'Failed to retirve post');
+            return redirect()->back()->with('error', 'Failed to retrieve post');
         }
 
         try {
@@ -211,16 +211,16 @@ class Posts extends BaseController
         } catch (\Exception $e) {
             // gerando o dados para o log
             $log_data = [
-                'id' => session()->get('user')['id'],
-                'username' => session()->get('user')['username'],
+                'id' => service('auth')->getUser()['id'],
+                'username' => service('auth')->getUser()['username'],
                 'ip_address' => $this->request->getIPAddress(),
                 'error' => $e->getMessage(),
             ];
 
             // Log the error message
-            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to retrive post: {error}', $log_data);
+            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to retrieve post: {error}', $log_data);
 
-            return redirect()->back()->with('error', 'Failed to retrive post. Try again.')->withInput();
+            return redirect()->back()->with('error', 'Failed to retrieve post. Try again.')->withInput();
         }
     }
 
@@ -319,8 +319,8 @@ class Posts extends BaseController
 
             // gerando o dados para o log
             $log_data = [
-                'id' => session()->get('user')['id'],
-                'username' => session()->get('user')['username'],
+                'id' => service('auth')->getUser()['id'],
+                'username' => service('auth')->getUser()['username'],
                 'ip_address' => $this->request->getIPAddress(),
                 'error' => $e->getMessage(),
             ];
@@ -339,7 +339,7 @@ class Posts extends BaseController
         ];
 
         if (empty($id)) {
-            return redirect()->back()->with('error', 'Failed to retirve post');
+            return redirect()->back()->with('error', 'Failed to retrieve post');
         }
 
         try {
@@ -382,16 +382,16 @@ class Posts extends BaseController
 
             // gerando o dados para o log
             $log_data = [
-                'id' => session()->get('user')['id'],
-                'username' => session()->get('user')['username'],
+                'id' => service('auth')->getUser()['id'],
+                'username' => service('auth')->getUser()['username'],
                 'ip_address' => $this->request->getIPAddress(),
                 'error' => $e->getMessage(),
             ];
 
             // Log the error message
-            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to retrive post: {error}', $log_data);
+            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to retrieve post: {error}', $log_data);
 
-            return redirect()->back()->with('error', 'Failed to retrive post. Try again.')->withInput();
+            return redirect()->back()->with('error', 'Failed to retrieve post. Try again.')->withInput();
         }
         //
     }
@@ -417,8 +417,8 @@ class Posts extends BaseController
         } catch (\Exception $e) {
             // gerando o dados para o log
             $log_data = [
-                'id' => session()->get('user')['id'],
-                'username' => session()->get('user')['username'],
+                'id' => service('auth')->getUser()['id'],
+                'username' => service('auth')->getUser()['username'],
                 'ip_address' => $this->request->getIPAddress(),
                 'error' => $e->getMessage(),
             ];
