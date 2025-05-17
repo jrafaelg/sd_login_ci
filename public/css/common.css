@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /* CSS Document */
-.link-danger-delete:hover 
+.link-danger-delete:hover
 {
     color: red;
 }
@@ -9,3 +9,77 @@
 .ci-fa-link, .link-edit{
     text-decoration: none;
 }
+
+
+/* pagination links */
+/* .pagination {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin: 5em 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pagination a,
+.pagination span {
+    padding: 4px 10px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.pagination a:hover {
+    background: #bbb;
+}
+
+.pagination .active {
+    background: #ccc;
+    color: #fff;
+}
+
+.pagination .disabled {
+    color: #aaa;
+} */
+
+/* /pagination links */
+
+
+/* .pagination {
+    display: flex;
+    vertical-align: middle;
+    gap: 6px;
+    justify-content: center;
+    padding: 0;
+    margin: 1.5em 0;
+    list-style: none;
+}
+
+.pagination a,
+.pagination span {
+    display: block;
+    padding: 6px 12px;
+    color: #444;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: background 0.15s, color 0.15s;
+}
+
+.pagination a:hover {
+    background: #eee;
+    color: #000;
+}
+
+.pagination .active span {
+    background: #222;
+    color: #fff;
+    pointer-events: none;
+}
+
+.pagination .disabled span {
+    color: #bbb;
+    pointer-events: none;
+} */

@@ -24,7 +24,13 @@
 
             <?php else: ?>
 
+
+
+
                 <div class="posts-container mx-auto my-5">
+
+                    <?= $pager_links; ?>
+
                     <div class="posts text-start">
                         <?php foreach ($posts as $post): ?>
                             <div class="post my-5">
@@ -77,7 +83,12 @@
                             </div>
                         <?php endforeach; ?>
                     </div>
+
+                    <?= $pager_links; ?>
+
                 </div>
+
+
 
             <?php endif; ?>
         </div>

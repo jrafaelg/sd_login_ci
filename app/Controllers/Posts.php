@@ -32,15 +32,36 @@ class Posts extends BaseController
         ];
 
         $postsCached = cache()->remember('posts', $this->ttl, function () {
-            $postsModel = model('PostsModel')
+            //$postsModel = model('PostsModel')
+            $postsModel = model(PostsModel::class)
                 ->select('posts.*, users.username')
                 ->join('users', 'users.id = posts.user_id')
-                //->asArray()
                 ->findAll();
             return $postsModel; //->asArray()->findAll();
         });
 
-        $data['posts'] = $postsCached;
+
+        $page = $this->request->getGet('page') ?? 1;
+        $perPage = 10;
+
+        $results = $postsCached;
+        $total = count($results);
+        $start = ($page - 1) * $perPage;
+        $pagedResults = array_slice($results, $start, $perPage);
+
+        $pager = service('pager');
+        $pager_links = $pager->makeLinks($page, $perPage, $total, 'paginator');
+
+        $data = [
+            'posts'       => $pagedResults,
+            'pager_links' => $pager_links,
+            'total'       => $total,
+            'perPage'     => $perPage,
+        ];
+
+        //dd($data);
+
+        //$data['posts'] = $postsCached;
 
         return view('posts/index', $data);
     }
