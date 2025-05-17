@@ -45,7 +45,7 @@
 
             <div class="col-12 mt-5">
                 <p class="text-center">
-                    <a href="<?= url_to('Posts::index') ?>" class="btn btn-primary">Voltar</a>
+                    <a href="javascript:history.back()" class="btn btn-primary">Voltar</a>
                 </p>
             </div>
         </div>
