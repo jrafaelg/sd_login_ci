@@ -76,7 +76,7 @@ class Employees extends BaseController
         $cipher = new Cipher();
 
         // tentando decriptografar a chave privada
-        $deciphed_private_key = $cipher->decrypt(session()->get('user')['private_key'], $data['password_sign']);
+        $deciphed_private_key = $cipher->decrypt(service('auth')->getUser()['private_key'], $data['password_sign']);
 
         // verificando se a chave privada foi decriptografada com sucesso
         if (empty($deciphed_private_key)) {
@@ -86,7 +86,7 @@ class Employees extends BaseController
         }
 
         // get resume form register data
-        $resume = $data['name'] . $data['address'] . $data['salary'] . session()->get('user')['id'];
+        $resume = $data['name'] . $data['address'] . $data['salary'] . service('auth')->getUser()['id'];
 
         // loading the deciphed private key
         $private = RSA::loadPrivateKey($deciphed_private_key);
@@ -96,7 +96,7 @@ class Employees extends BaseController
         $digital_sign = base64_encode($sing);
 
         // inserindo o código do usuário logado nos dados do funcionário
-        $data['cod_user'] = session()->get('user')['id'];
+        $data['cod_user'] = service('auth')->getUser()['id'];
         // inserindo a assinatura digital
         $data['digital_sign'] = $digital_sign;
 
@@ -112,8 +112,8 @@ class Employees extends BaseController
 
             // gerando o dados para o log
             $log_data = [
-                'id' => session()->get('user')['id'],
-                'username' => session()->get('user')['username'],
+                'id' => service('auth')->getUser()['id'],
+                'username' => service('auth')->getUser()['username'],
                 'ip_address' => $this->request->getIPAddress(),
                 'error' => $e->getMessage(),
             ];
@@ -128,47 +128,147 @@ class Employees extends BaseController
     public function edit($id)
     {
 
-        // if (! is_file(APPPATH . 'Views/pages/employees/edit.php')) {
-        //     // Whoops, we don't have a page for that!
-        //     throw new PageNotFoundException('edit');
-        // }
-
         $data = [
             'title' => 'Edit Employee',
         ];
 
-        $employeesModel = model('EmployeesModel');
+        try {
 
-        $data['employee'] = $employeesModel->asArray()->find($id);
+            $employeesModel = model('EmployeesModel');
 
-        if (empty($data['employee'])) {
-            return redirect()->to('/employees')->with('error', 'Employee not found');
+            $employee = $employeesModel->asArray()->find($id);
+
+            if (empty($employee)) {
+                return redirect()->to('/employees')->with('error', 'Employee not found');
+            }
+
+            // buscando o usuário criador do post
+            $user = model('UserModel')
+                ->select('public_key')
+                ->where('id', $employee['cod_user'])
+                ->asArray()
+                ->first();
+
+            if (empty($user['public_key'])) {
+                return redirect()->to('/employees')->with('error', 'Invalid keys');
+            }
+
+
+            // get resume form register data
+            $resume = $employee['name'] . $employee['address'] . $employee['salary'] . $employee['cod_user'];
+
+            $stored_public_key = $user['public_key'];
+            $public_key = RSA::loadPublicKey($stored_public_key);
+
+            $stored_signature = $employee['digital_sign'];
+            $deciphed_signature = base64_decode($stored_signature);
+            $digital_sign = $public_key->verify($resume, $deciphed_signature) ? TRUE : FALSE;
+
+            $employee['digital_sign'] = $digital_sign;
+
+
+            $data['employee'] = $employee;
+
+            return $this->view('employees/edit', $data);
+
+
+            //
+        } catch (Exception $e) {
+            throw new PageNotFoundException();
         }
-
-        return $this->view('employees/edit', $data);
     }
 
     public function update()
     {
-        $data = $this->request->getPost(['name', 'address', 'salary', 'cod_user', 'digital_sign']);
+        $data = $this->request->getPost(['id', 'name', 'address', 'salary', 'cod_user', 'password_sign']);
 
-        // Checks whether the submitted data passed the validtion rules.
-        if (! $this->validateData($data, [
-            'name'         => 'required|max_length[128]|min_length[3]',
-            'address'      => 'required|max_length[5000]|min_length[10]',
-            'salary'       => 'required|numeric',
-            'cod_user'     => 'required|numeric',
-            'digital_sign' => 'required|numeric',
-        ])) {
-            return redirect()->back()->withInput();
+        $validated = $this->validateData(
+            $data,
+            [
+                'id'            => 'required|numeric',
+                'cod_user'      => 'required|numeric',
+                'name'          => 'required|max_length[128]|min_length[3]',
+                'address'       => 'required|max_length[5000]|min_length[10]',
+                'salary'        => 'required|numeric',
+                'password_sign' => 'required',
+            ],
+            [
+                'name'         => [
+                    'required'    => 'Name is required',
+                    'max_length'  => 'Name cannot exceed 128 characters',
+                    'min_length'  => 'Name must be at least 3 characters long',
+                ],
+                'address'      => [
+                    'required'    => 'Address is required',
+                    'max_length'  => 'Address cannot exceed 5000 characters',
+                    'min_length'  => 'Address must be at least 10 characters long',
+                ],
+                'salary'       => [
+                    'required'    => 'Salary is required',
+                    'numeric'     => 'Salary must be a number',
+                ],
+                'password_sign' => [
+                    'required'    => 'Password sign is required',
+                ],
+            ]
+        );
+
+        // Checks whether the submitted data passed the validation rules.
+        if (!$validated) {
+            return redirect()->back()->with('errors', $this->validator->getErrors())->withInput();
         }
 
-        $employeesModel = model('EmployeesModel');
 
-        if ($employeesModel->update($this->request->getPost('id'), $data)) {
-            return redirect()->to('/employees')->with('success', 'Employee updated successfully');
-        } else {
-            return redirect()->back()->withInput()->with('error', 'Failed to update employee');
+        $deciphed_private_key = '';
+        $cipher = new Cipher();
+
+        // tentando decriptografar a chave privada
+        $deciphed_private_key = $cipher->decrypt(service('auth')->getUser()['private_key'], $data['password_sign']);
+
+        // verificando se a chave privada foi decriptografada com sucesso
+        if (empty($deciphed_private_key)) {
+            // em caso de erro, retorna para a tela de cadastro
+            $this->validator->setError('password_sign', 'Invalid password sign.');
+            return redirect()->back()->with('errors', $this->validator->getErrors())->withInput();
+        }
+
+        // get resume form register data
+        $resume = $data['name'] . $data['address'] . $data['salary'] . service('auth')->getUser()['id'];
+
+        // loading the deciphed private key
+        $private = RSA::loadPrivateKey($deciphed_private_key);
+
+        // sign the resume
+        $sing = $private->sign($resume);
+        $digital_sign = base64_encode($sing);
+
+        // inserindo o código do usuário logado nos dados do funcionário
+        $data['cod_user'] = service('auth')->getUser()['id'];
+        // inserindo a assinatura digital
+        $data['digital_sign'] = $digital_sign;
+
+        // instanciando o model
+        $employeesModel = new EmployeesModel();
+
+        try {
+            $employeesModel->save($data);
+            // Clear the cache for employees
+            cache()->delete('employees');
+            return redirect()->to('/employees')->with('success', 'Employee updated successfully')->withInput();
+        } catch (\Exception $e) {
+
+            // gerando o dados para o log
+            $log_data = [
+                'id' => service('auth')->getUser()['id'],
+                'username' => service('auth')->getUser()['username'],
+                'ip_address' => $this->request->getIPAddress(),
+                'error' => $e->getMessage(),
+            ];
+
+            // Log the error message
+            log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to updated employee: {error}', $log_data);
+
+            return redirect()->back()->with('error', 'Failed to updated employee. Try again.')->withInput();
         }
     }
 
@@ -195,8 +295,8 @@ class Employees extends BaseController
 
             // gerando o dados para o log
             $log_data = [
-                'id' => session()->get('user')['id'],
-                'username' => session()->get('user')['username'],
+                'id' => service('auth')->getUser()['id'],
+                'username' => service('auth')->getUser()['username'],
                 'ip_address' => $this->request->getIPAddress(),
                 'error' => $e->getMessage(),
             ];
@@ -282,7 +382,7 @@ class Employees extends BaseController
 
 
         $cipher = new Cipher();
-        $deciphed_private_key = $cipher->decrypt($keys['private_key'], session()->get('user')['password_sign']);
+        $deciphed_private_key = $cipher->decrypt($keys['private_key'], service('auth')->getUser()['password_sign']);
         if (empty($deciphed_private_key)) {
             return redirect()->to('/employees')->with('error', 'Invalid password sign');
         }

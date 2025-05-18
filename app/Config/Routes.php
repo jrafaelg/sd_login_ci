@@ -37,8 +37,8 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     //employees
     $routes->get('employees', [Employees::class, 'index'], ['as' => 'employees.index']);
     $routes->get('employees/show/(:segment)', [Employees::class, 'show'], ['filter' => 'authorize:employee.view']);
-    $routes->get('employees/edit/(:segment)', [Employees::class, 'edit']);
-    $routes->post('employees/update', [Employees::class, 'update']);
+    $routes->get('employees/edit/(:segment)', [Employees::class, 'edit'], ['filter' => 'authorize:employee.edit']);
+    $routes->post('employees/edit', [Employees::class, 'update'], ['as' => 'employees.update', 'filter' => 'authorize:employee.edit']);
     //$routes->get('employees/delete/(:segment)', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
     $routes->post('employees/delete', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
     $routes->get('employees/new', [Employees::class, 'new']);

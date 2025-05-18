@@ -64,8 +64,9 @@
                                             <?php endif ?>
 
                                             <?php if (!can('employee.delete')): ?>
-                                                <form action="<?= url_to('Employees::delete', $employee['id']) ?>" id="1form<?= $employee['id'] ?>" method="get" class="d-inline">
+                                                <form action="<?= url_to('Employees::delete') ?>" id="1form<?= $employee['id'] ?>" method="get" class="d-inline">
                                                     <?= csrf_field() ?>
+                                                    <input type="hidden" name="id" value="<?= $employee['id'] ?>">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button type="submit" class="btn btn-outline-danger btn-sm link-danger-delete" id="<?= $employee['id'] ?>">Delete</button>
                                                 </form>

@@ -117,4 +117,31 @@ class Button
 
         return $html;
     }
+
+
+    public function back(array $param)
+    {
+
+
+        $label = $param['label'] ?? 'Back';
+        /**
+         *             <div class="row">
+         *                 <div class="d-flex justify-content-center">
+         *                     <a href="javascript:history.back()" class="ci-fa-link btn btn-primary d-flex align-items-center">
+         *                         <!-- <i class="bi bi-plus me-2"></i> -->
+         *                         <i class="fa fa-arrow-left me-2 ci-fa-link" ></i>
+         *                          $label
+         *                     </a>
+         *                 </div>
+         *             </div>
+         */
+
+        $html = <<<HTML
+
+                <a href="javascript:history.back()" class="btn btn-block btn-secondary w-50">$label</a>
+
+        HTML;
+
+        return $html;
+    }
 }
