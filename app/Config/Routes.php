@@ -29,6 +29,9 @@ $routes->get('login/logout', [Login::class, 'logout'], ['as' => 'logout']);
 
 $routes->group('', ['filter' => 'auth'], static function ($routes) {
 
+    $routes->get('login/changepassword', [Login::class, 'changePassword'], ['as' => 'login.changepassword']);
+    $routes->post('login/changepassword', [Login::class, 'updatePassword'], ['as' => 'login.changepassword']);
+
     $routes->get('news', [News::class, 'index'], ['as' => 'news']);
     $routes->get('news/new', [News::class, 'new']);
     $routes->post('news', [News::class, 'create']);
@@ -39,7 +42,6 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('employees/show/(:segment)', [Employees::class, 'show'], ['filter' => 'authorize:employee.view']);
     $routes->get('employees/edit/(:segment)', [Employees::class, 'edit'], ['filter' => 'authorize:employee.edit']);
     $routes->post('employees/edit', [Employees::class, 'update'], ['as' => 'employees.update', 'filter' => 'authorize:employee.edit']);
-    //$routes->get('employees/delete/(:segment)', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
     $routes->post('employees/delete', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
     $routes->get('employees/new', [Employees::class, 'new']);
     $routes->post('employees/new', [Employees::class, 'create']);
@@ -49,7 +51,6 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
     $routes->post('posts/new', [Posts::class, 'create'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
     $routes->get('posts/show/(:segment)', [Posts::class, 'show'], ['as' => 'posts.show', 'filter' => 'authorize:post.view']);
-    //$routes->get('posts/delete/(:segment)', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
     $routes->post('posts/delete', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
     $routes->get('posts/edit/(:segment)', [Posts::class, 'edit'], ['as' => 'posts.edit', 'filter' => 'authorize:post.edit']);
     $routes->post('posts/edit', [Posts::class, 'update'], ['as' => 'posts.update', 'filter' => 'authorize:post.edit']);

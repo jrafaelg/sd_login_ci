@@ -30,20 +30,8 @@ class Login extends BaseController
             'title'     => 'Login Page',
         ];
 
-        $view = \Config\Services::renderer();
-
-        //$view->setVar('data', $data);
 
         return view('login/index', $data);
-
-
-        //return  $view->render('login/index', $data);
-
-        //return $this->_render($this->config->views['login'], ['config' => $this->config]);
-
-        //        return view('templates/header', $data)
-        //            . view('login/index')
-        //            . view('templates/footer');
     }
 
     public function register()
@@ -258,9 +246,6 @@ class Login extends BaseController
         unset($userFound->password);
         session()->set('user', (array)$userFound);
 
-
-        //dd($userFound);
-
         $info = [
             'id'         => $userFound->id,
             'username'   => $userFound->username,
@@ -271,24 +256,7 @@ class Login extends BaseController
 
         service('auth')->generateSessionUid();
 
-        //$authorize = service('authorize');
-
-        //$roles = $authorize->getRoles($userFound->id);
-        //dump($roles);
-
-        //$permissionsUser = $authorize->getPermissionsByUser($userFound->id);
-        //dump($permissionsUser);
-
-        //$permissionsRoles = $authorize->getPermissonsByRoles($roles);
-        //dump($permissionsRoles);
-
-        //$permissions = array_merge($permissionsUser, $permissionsRoles);
-        //$permissions = $permissionsUser + $permissionsRoles;
-        //$permissions =  [...$permissionsUser, ...$permissionsRoles];
-
-        //session()->set('roles', $roles);
-        //session()->set('permissions', $permissions);
-
+        // redireciona para a página de verificação do OTP
         return redirect()->to('login/checkotp');
     }
 
@@ -392,114 +360,65 @@ class Login extends BaseController
 
         // se o código for válido, retorna true
         return true;
-
-        /*
-        $db      = \Config\Database::connect();
-        $builder = $db->table('backupcodes');
-        $builder->select('backup_code');
-        $builder->where('cod_user', session()->get('user')->id);
-        $builder->where('used', 0);
-        $query = $builder->get();
-
-        // se não retornar nada é por que o usuário não tem mais códigos de backup
-        if ($query->getNumRows() < 1) {
-            return false;
-        }
-
-        $backupCodes = $query->getResult();
-
-        dd($backupCodes);
-        */
     }
 
-    // private function getRoles(int $id)
-    // {
+    public function changePassword()
+    {
+        $data = [
+            'user'      => ['id' => service('auth')->getUser()['id']],
+            'title'     => 'Change Password',
+        ];
 
-    //     $roles = [];
+        return view('login/changepassword', $data);
+    }
 
-    //     if (empty($id)) {
-    //         return $roles;
-    //     }
+    public function updatePassword()
+    {
+        $validated = $this->validate(
+            [
+                'old_password'     => 'required',
+                'password'         => 'required|PasswordIsValid',
+                'confirm_password' => 'required|matches[password]',
+            ],
+            [
+                'old_password' => [
+                    'required' => 'Senha antiga é requerida',
+                ],
+                'password' => [
+                    'required' => 'Senha nova é requerida',
+                    'PasswordIsValid'  => 'Senha deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
+                ],
+                'confirm_password' => [
+                    'required' => 'Confirmação de senha é requerida',
+                    'matches'  => 'Confirmação de senha não confere'
+                ],
+            ]
+        );
 
-    //     $rolesModel = new RoleModel();
-    //     $rolesFound = $rolesModel
-    //         ->select('roles.id, roles.key')
-    //         ->join('role_user', 'role_user.role_id = roles.id')
-    //         ->join('users', 'users.id = role_user.user_id')
-    //         ->where('users.id', $id)
-    //         ->findAll();
+        if (!$validated) {
+            return redirect()->to('login/changepassword')->with('errors', $this->validator->getErrors())->withInput();
+        }
 
-    //     if (empty($rolesFound)) {
-    //         return $roles;
-    //     }
+        $userModel = new UserModel();
+        $user = $userModel->where('id', service('auth')->getUser()['id'])->first();
 
-    //     // planificando o array retornado
-    //     foreach ($rolesFound as $role) {
-    //         $roles[$role['id']] = $role['key'];
-    //     }
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Ocorreu um erro');
+        }
 
-    //     return $roles;
-    // }
+        if (!password_verify($this->request->getPost('old_password'), $user->password)) {
+            $this->validator->setError('old_password', 'Senha antiga inválida');
+            return redirect()->to('login/changepassword')->with('errors', $this->validator->getErrors())->withInput();
+        }
 
-    // private function getPermissionsUser(int $id)
-    // {
+        $data = [
+            'id'       => service('auth')->getUser()['id'],
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+        ];
 
-    //     $permissions = [];
+        $userModel->save($data);
 
-    //     if (empty($id)) {
-    //         return $permissions;
-    //     }
-
-    //     $permissionsUserModel = new PermissionModel();
-    //     $permissionsFound = $permissionsUserModel
-    //         ->select('permissions.id, permissions.key')
-    //         ->join('permission_user', 'permission_user.permission_id = permissions.id')
-    //         ->join('users', 'users.id = permission_user.user_id')
-    //         ->where('users.id', $id)
-    //         ->findAll();
-
-
-    //     if (empty($permissionsFound)) {
-    //         return $permissions;
-    //     }
-
-    //     // planificando o array retornado
-    //     foreach ($permissionsFound as $permission) {
-    //         $permissions[$permission['id']] = $permission['key'];
-    //     }
-
-    //     return $permissions;
-    // }
-
-    // private function getPermissonsRoles($id)
-    // {
-    //     $permissions = [];
-
-    //     if (empty($id)) {
-    //         return $permissions;
-    //     }
-
-    //     // pegando as chaves que são os IDs 
-    //     // e ajustando apara a clausula IN do SQL
-    //     $ids = array_keys($id);
-
-    //     $permissionsModel = new PermissionModel();
-    //     $permissionsFound = $permissionsModel
-    //         ->select('permissions.id, permissions.key')
-    //         ->join('permission_role', 'permission_role.permission_id = permissions.id')
-    //         ->join('roles', 'roles.id = permission_role.role_id')
-    //         ->whereIn('roles.id', $ids)
-    //         ->findAll();
-
-    //     if (empty($permissionsFound)) {
-    //         return $permissions;
-    //     }
-
-    //     // planificando o array retornado
-    //     foreach ($permissionsFound as $permission) {
-    //         $permissions[$permission['id']] = $permission['key'];
-    //     }
-
-    //     return $permissions;
-    // }
+        return redirect()->route('login')->with('success', 'Senha alterada com sucesso');
+        //
+    }
 }

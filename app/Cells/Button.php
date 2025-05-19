@@ -30,14 +30,22 @@ class Button
         $label = $param['title'] ?? 'Delete';
         $class = 'btn btn-danger';
 
+
         $html = <<<HTML
-        <!-- <a href="$url" class="ci-fa-link link-danger-delete" data-bs-toggle="modal" data-bs-target="#deleteModal"> -->
-        <a href="$url" class="ci-fa-link link-danger-delete" id="$id">        
-            <span class="align-items-center" title="$label">
-                <i class="fa-regular fa-trash-can fs-5 ms-2"></i>
-            </span>
-        </a>
-        HTML;
+            <!-- <a href="$url" class="ci-fa-link link-danger-delete" data-bs-toggle="modal" data-bs-target="#deleteModal"> -->
+            <a href="$url" class="ci-fa-link link-danger-delete" id="$id">        
+                <span class="align-items-center" title="$label">
+                    <i class="fa-regular fa-trash-can fs-5 ms-2"></i>
+                </span>
+            </a>
+            HTML;
+
+
+        if (isset($param['button']) && $param['button'] == true) {
+            $html = <<<HTML
+                <button class="btn btn-danger link-danger-delete" id="$id" type="button" style="min-width: 100px;">$label</button>
+            HTML;
+        }
 
         return $html;
     }
@@ -62,6 +70,12 @@ class Button
             </span>
         </a>
         HTML;
+
+        if (isset($param['button']) && $param['button'] == true) {
+            $html = <<<HTML
+            <a href="$url" class="btn btn-primary" style="min-width: 100px;">$label</a>                
+            HTML;
+        }
 
         return $html;
     }
@@ -108,7 +122,6 @@ class Button
                     <a href="$url" class="ci-fa-link btn btn-success d-flex align-items-center">
                         <!-- <i class="bi bi-plus me-2"></i> -->
                         <i class="fa fa-plus me-2 ci-fa-link" ></i>
-
                          $label
                     </a>
                 </div>
@@ -118,28 +131,26 @@ class Button
         return $html;
     }
 
+    public function submit(array $param)
+    {
+
+        $label = $param['label'] ?? 'Submit';
+
+        $html = <<<HTML
+                <button class="btn btn-primary" type="submit" style="min-width: 100px;">$label</button>
+        HTML;
+
+        return $html;
+    }
 
     public function back(array $param)
     {
 
-
         $label = $param['label'] ?? 'Back';
-        /**
-         *             <div class="row">
-         *                 <div class="d-flex justify-content-center">
-         *                     <a href="javascript:history.back()" class="ci-fa-link btn btn-primary d-flex align-items-center">
-         *                         <!-- <i class="bi bi-plus me-2"></i> -->
-         *                         <i class="fa fa-arrow-left me-2 ci-fa-link" ></i>
-         *                          $label
-         *                     </a>
-         *                 </div>
-         *             </div>
-         */
 
         $html = <<<HTML
-
-                <a href="javascript:history.back()" class="btn btn-block btn-secondary w-50">$label</a>
-
+                <!-- <a href="javascript:history.back()" class="btn btn-block btn-secondary w-4">$label</a> -->
+                <button class="btn btn-secondary" onclick="javascript:history.back()" type="button" style="min-width: 100px;">$label</button>
         HTML;
 
         return $html;

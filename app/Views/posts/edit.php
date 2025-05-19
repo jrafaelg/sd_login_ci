@@ -94,13 +94,11 @@
                         </div>
                     </div>
 
-                    <div class="d-flex gap-5 justify-content-center">
-                        <button type="submit"
-                            class="btn btn-primary btn-block w-100">
-                            Submit
-                        </button>
-                        <a href="<?= url_to('Posts::index') ?>" class="btn btn-block btn-secondary w-100">Cancel</a>
+                    <div class="d-grid gap-5 d-md-flex justify-content-center mx-auto mt-5">
+                        <?= view_cell('Button::submit', ['label' => 'Submit']) ?>
+                        <?= view_cell('Button::back', ['label' => 'Cancel']) ?>
                     </div>
+
                 </div>
             </form>
         </div>

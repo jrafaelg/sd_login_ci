@@ -53,12 +53,13 @@
                         <?= getUser()['username'] ?? 'name' ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="<?= url_to('Login::logout') ?>">Logout</a>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="<?= url_to('Login::logout') ?>">Logout</a></li>
+                        <li><a class="dropdown-item" href="<?= url_to('Login::changePassword') ?>">Change Password</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="<?= url_to('Login::logout') ?>">Logout</a></li>
+
                     </ul>
                 </li>
                 <!-- <li class="nav-item">

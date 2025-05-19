@@ -30,9 +30,16 @@
                 </p>
             </div>
 
-            <p class="text-center">
-                <a href="<?= url_to('Employees::index') ?>" class="btn btn-primary">Voltar</a>
-            </p>
+            <div class="d-grid gap-5 d-md-flex justify-content-center mx-auto mt-5">
+                <?= view_cell('Button::back', ['label' => 'Voltar']) ?>
+                <?php if (can('employee.edit')): ?>
+                    <?= view_cell('Button::edit', ['controller' => 'Employees', 'method' => 'edit', 'id' => $employee['id'], 'title' => 'Edit employee', 'button' => true]) ?>
+                <?php endif ?>
+                <?php if (can('employee.delete')): ?>
+                    <?= view_cell('Button::del', ['controller' => 'Employees', 'method' => 'delete', 'id' => $employee['id'], 'title' => 'Delete employee', 'button' => true]) ?>
+                    <?= view_cell('Form::del', ['id' => $employee['id'], 'title' => 'Delete employee', 'controller' => 'Employees', 'method' => 'delete']) ?>
+                <?php endif ?>
+            </div>
 
         </div>
     </div>

@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /* CSS Document */
-.link-danger-delete:hover
+a.link-danger-delete:hover
 {
     color: red;
 }

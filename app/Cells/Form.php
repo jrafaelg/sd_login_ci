@@ -22,12 +22,10 @@ class Form
         $target = $controller . '::' . $method;
 
         $url = url_to($target);
-        $label = $param['title'] ?? 'Delete';
-        $class = 'btn btn-danger';
         $csrf_field = csrf_field();
 
         $html = <<<HTML
-        <form action="$url" id="$idForm" method="POST" accept-charset="utf-8">
+        <form action="$url" id="$idForm" method="POST" accept-charset="utf-8" style="display: none;">
             $csrf_field
             <input type="hidden" name="id" value="$id">            
         </form>

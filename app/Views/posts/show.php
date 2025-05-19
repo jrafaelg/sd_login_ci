@@ -43,11 +43,17 @@
                 </div>
             </div>
 
-            <div class="col-12 mt-5">
-                <p class="text-center">
-                    <a href="javascript:history.back()" class="btn btn-primary">Voltar</a>
-                </p>
+            <div class="d-grid gap-5 d-md-flex justify-content-center mx-auto mt-5">
+                <?= view_cell('Button::back', ['label' => 'Voltar']) ?>
+                <?php if (can('post.edit')): ?>
+                    <?= view_cell('Button::edit', ['controller' => 'posts', 'method' => 'edit', 'id' => $post->id, 'title' => 'Edit Post', 'button' => true]) ?>
+                <?php endif ?>
+                <?php if (can('post.delete')): ?>
+                    <?= view_cell('Button::del', ['controller' => 'posts', 'method' => 'delete', 'id' => $post->id, 'title' => 'Delete Post', 'button' => true]) ?>
+                    <?= view_cell('Form::del', ['id' => $post->id, 'title' => 'Delete post', 'controller' => 'posts', 'method' => 'delete']) ?>
+                <?php endif ?>
             </div>
+
         </div>
     </div>
 </div>
