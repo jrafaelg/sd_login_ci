@@ -47,10 +47,10 @@ class Login extends BaseController
 
         $validated = $this->validate(
             [
-                'username' => 'required|is_unique[users.username]',
-                'password' => 'required|PasswordIsValid',
-                'password_confirm' => 'required|matches[password]',
-                'password_sign' => 'required|min_length[6]',
+                'username'              => 'required|is_unique[users.username]',
+                'password'              => 'required|PasswordIsValid',
+                'password_confirm'      => 'required|matches[password]',
+                'password_sign'         => 'required|min_length[6]',
                 'password_sign_confirm' => 'required|matches[password_sign]'
             ],
             [
@@ -61,7 +61,7 @@ class Login extends BaseController
                 'password' => [
                     'required' => 'Password é requerido',
                     //'PasswordStrengthValidator'  => 'PasswordStrengthValidator',
-                    'PasswordStrengthValidator'  => 'Password deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
+                    //'PasswordStrengthValidator'  => 'Password deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
                 ],
                 'password_confirm' => [
                     'required' => 'Confirmação de password é requerido',
