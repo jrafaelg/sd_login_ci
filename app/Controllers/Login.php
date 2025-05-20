@@ -386,7 +386,7 @@ class Login extends BaseController
                 ],
                 'password' => [
                     'required' => 'Senha nova é requerida',
-                    'PasswordIsValid'  => 'Senha deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
+                    'PasswordIsValid' => 'Senha deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
                 ],
                 'confirm_password' => [
                     'required' => 'Confirmação de senha é requerida',
