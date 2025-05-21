@@ -80,8 +80,8 @@ class PasswordStrengthValidator
                 if (method_exists($this, $method) && is_callable([$this, $method])) {
 
                     if (!$this->{$method}()) {
-                        dd($error);
-                        if (empty($error)) {
+                        //dd($error);
+                        if (!empty($error)) {
                             $error = $this->errorMessage;
                         }
                         return false;

@@ -1,10 +1,14 @@
-<?= $this->extend('templates\main') ?>
-
-<?= $this->section('content') ?>
-
-
-<?php //= $this->render('templates\header') ?: 'Fallback title'  
+<?= $this->extend('templates\main')
 ?>
+
+<?= $this->section('content')
+?>
+
+
+<?php //= $this->render('templates\header') ?: 'Fallback title';
+?>
+
+
 <div class="container" style="min-height: 90vh;">
     <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-8">
@@ -28,6 +32,7 @@
 
 </div>
 
-<?= $this->endSection() ?>
+<?= $this->endSection()
+?>
 <?php // = $this->render('templates\footer') ?: 'Fallback title'  
 ?>
