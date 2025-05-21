@@ -397,6 +397,12 @@ class Posts extends BaseController
             $post->digital_sign = $digital_sign;
 
             $data['post'] = $post;
+            $data['comments'] = [
+                [
+                    'title' => 'Comments',
+                    'comment' => 'posts',
+                ]
+            ];
 
             return view('posts/show', $data);
         } catch (\Exception $e) {

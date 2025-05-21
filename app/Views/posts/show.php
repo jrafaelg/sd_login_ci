@@ -54,6 +54,10 @@
                 <?php endif ?>
             </div>
 
+            <?= $this->render('comments\listbyobject') ?>
+
+
+
         </div>
     </div>
 </div>
