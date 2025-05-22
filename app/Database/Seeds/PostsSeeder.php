@@ -42,7 +42,7 @@ class PostsSeeder extends Seeder
             "user_id" => random_int(1, 9),
             "digital_sign" => random_int(1000, 99999999),
             "status" => $fakerObject->randomElement(['publish', 'pending', 'draft']),
-            "created_at" => date("Y-m-d H:i:s"),
+            "created_at" => $fakerObject->dateTime('now')->format('Y-m-d H:i:s'),
         );
     }
 }

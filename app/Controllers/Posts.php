@@ -3,11 +3,9 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Libraries\Auth;
 use App\Libraries\Cipher;
 use App\Models\PostsModel;
 use CodeIgniter\HTTP\ResponseInterface;
-use CodeIgniter\I18n\Time;
 use phpseclib3\Crypt\RSA;
 
 class Posts extends BaseController
@@ -36,6 +34,7 @@ class Posts extends BaseController
             $postsModel = model(PostsModel::class)
                 ->select('posts.*, users.username')
                 ->join('users', 'users.id = posts.user_id')
+                ->orderBy('created_at', 'DESC')
                 ->findAll();
             return $postsModel; //->asArray()->findAll();
         });
@@ -397,12 +396,17 @@ class Posts extends BaseController
             $post->digital_sign = $digital_sign;
 
             $data['post'] = $post;
-            $data['comments'] = [
-                [
-                    'title' => 'Comments',
-                    'comment' => 'posts',
-                ]
-            ];
+
+            // instanciando o model
+            $comments = model('CommentsModel')
+                ->select('comments.*, users.username')
+                ->join('users', 'users.id = comments.user_id')
+                ->where('object', 'posts')
+                ->where('object_id', $post->id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+
+            $data['comments'] = $comments ?? [];
 
             return view('posts/show', $data);
         } catch (\Exception $e) {

@@ -41,7 +41,7 @@ class Comments extends Migration
             'parent_id' => [
                 'type' => 'INT',
                 'unsigned' => true,
-                'null' => false
+                'null' => true
             ],
             'user_id' => [
                 'type' => 'INT',
@@ -66,7 +66,8 @@ class Comments extends Migration
         $this->forge->addPrimaryKey('id', true);
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addKey('title');
-        $this->forge->addKey('object');
+        $this->forge->addKey('object_id');
+        $this->forge->addKey('parent_id');
         $this->forge->createTable($this->tableName, true);
     }
 
