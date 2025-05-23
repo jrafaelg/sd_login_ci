@@ -7,8 +7,8 @@
             <?php foreach ($comments as $comment) : ?>
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa-solid fa-at me-1 align-middle"></i> <?= esc($comment->username) ?>
+                        <h5 class="card-title text-secondary">
+                            <i class="fa-solid fa-at me-1 align-middle"></i><?= esc($comment->username) ?>
                             <?= esc($comment->created_at->format(DATE_TIME_BR_FORMAT)); ?>
                         </h5>
                         <p class="card-text"><?= esc($comment->comment, 'raw'); ?></p>

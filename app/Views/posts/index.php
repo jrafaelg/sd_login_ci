@@ -24,15 +24,13 @@
 
             <?php else: ?>
 
-
-
-
                 <div class="posts-container mx-auto my-5">
 
                     <?= $pager_links; ?>
 
                     <div class="posts text-start">
                         <?php foreach ($posts as $post): ?>
+
                             <div class="post my-5">
                                 <h1 class="fw-semibold">
                                     <a href="<?= url_to('Posts::show', $post->id) ?>" class="text-decoration-none">
@@ -42,7 +40,7 @@
 
                                 <div class="d-flex align-items-center mb-4 text-muted author-info">
                                     <span class="me-3">
-                                        <i class="fa-solid fa-at me-1 align-middle"></i> <?= esc($post->username) ?>
+                                        <i class="fa-solid fa-at me-1 align-middle"></i><?= esc($post->username) ?>
                                     </span>
 
                                     <span class="align-items-center me-3" title="<?= $post->created_at->format(DATE_TIME_BR_FORMAT) ?>">

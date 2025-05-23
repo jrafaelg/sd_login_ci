@@ -60,3 +60,4 @@ Events::on(
         log_message('debug', 'SQL Query: ' . (string) $query);
     },
 );
+
