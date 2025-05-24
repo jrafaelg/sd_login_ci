@@ -45,10 +45,27 @@ class PostsModel extends Model
     protected $allowCallbacks = true;
     protected $beforeInsert   = [];
     protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
+    protected $beforeUpdate   = ['logChanges'];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+
+    protected function logChanges(array $data)
+    {
+        // gerando o dados para o log
+        $log_data = [
+            'id' => service('auth')->getUser()['id'],
+            'username' => service('auth')->getUser()['username'],
+            'ip_address' => service('request')->getIPAddress(),
+            'data' => json_encode($data),
+        ];
+
+        // Log the error message
+        log_message('notice', 'ID: {id} - username: {username} - IP: {ip_address} - Update post: {data}', $log_data);
+
+        return $data;
+    }
 }

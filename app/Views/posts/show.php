@@ -20,7 +20,7 @@
             </div>
             <div class="col-12">
                 <p>
-                    <i class="fa-solid fa-at me-1 align-middle"></i> <?= esc($post->username) ?>
+                    <i class="fa-solid fa-at me-1 align-middle"></i><?= esc($post->username) ?>
                 </p>
             </div>
 
