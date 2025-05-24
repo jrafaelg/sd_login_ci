@@ -32,7 +32,8 @@ class PostsModel extends Model
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    //protected $updatedField  = 'updated_at';
+    protected $updatedField  = '';
     protected $deletedField  = 'deleted_at';
 
     // Validation
@@ -45,7 +46,7 @@ class PostsModel extends Model
     protected $allowCallbacks = true;
     protected $beforeInsert   = [];
     protected $afterInsert    = [];
-    protected $beforeUpdate   = ['logChanges'];
+    protected $beforeUpdate   = ['logChanges', 'updateDate'];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = [];
@@ -66,6 +67,12 @@ class PostsModel extends Model
         // Log the error message
         log_message('notice', 'ID: {id} - username: {username} - IP: {ip_address} - Update post: {data}', $log_data);
 
+        return $data;
+    }
+
+    protected function updateDate(array $data)
+    {
+        $data['data']['updated_at'] = date('Y-m-d H:i:s');
         return $data;
     }
 }

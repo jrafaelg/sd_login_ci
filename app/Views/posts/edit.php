@@ -17,6 +17,7 @@
                 <?= csrf_field() ?>
                 <input type="hidden" name="id" id="id" value="<?= $post->id ?? 0; ?>">
                 <input type="hidden" name="user_id" id="user_id" value="<?= $post->user_id ?? 0; ?>">
+
                 <div class="row gy-2 overflow-hidden">
 
                     <div class="col-12">

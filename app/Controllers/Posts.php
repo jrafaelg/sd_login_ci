@@ -84,7 +84,7 @@ class Posts extends BaseController
             $data,
             [
                 'title'         => 'required|max_length[200]|min_length[3]',
-                'contend'       => 'required|max_length[10000]|min_length[10]',
+                'contend'       => 'required|min_length[10]',
                 'status'        => 'required|in_list[draft,pending,publish]',
                 'password_sign' => 'required',
             ],
@@ -254,7 +254,7 @@ class Posts extends BaseController
             [
                 'id'            => 'required|is_not_unique[posts.id]',
                 'title'         => 'required|max_length[200]|min_length[3]',
-                'contend'       => 'required|max_length[10000]|min_length[10]',
+                'contend'       => 'required|min_length[10]',
                 'status'        => 'required|in_list[draft,pending,publish]',
                 'password_sign' => 'required',
             ],
@@ -406,7 +406,12 @@ class Posts extends BaseController
                 ->orderBy('created_at', 'DESC')
                 ->findAll();
 
+            // se não houver comentários, cria um array vazio
             $data['comments'] = $comments ?? [];
+
+            // setando a variável para o objeto de comentários
+            $data['comments_object'] = 'posts';
+            $data['comments_object_id'] = $post->id;
 
             return view('posts/show', $data);
         } catch (\Exception $e) {

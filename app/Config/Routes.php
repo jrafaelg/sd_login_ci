@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\Comments;
 use App\Controllers\Employees;
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\Login;
@@ -49,12 +50,20 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     //posts
     $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index', 'filter' => 'authorize:post.view']);
     $routes->get('posts/new', [Posts::class, 'new'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
-    $routes->post('posts/new', [Posts::class, 'create'], ['as' => 'posts.new', 'filter' => 'authorize:post.add']);
+    $routes->post('posts/new', [Posts::class, 'create'], ['as' => 'posts.create', 'filter' => 'authorize:post.add']);
     $routes->get('posts/show/(:segment)', [Posts::class, 'show'], ['as' => 'posts.show', 'filter' => 'authorize:post.view']);
     $routes->post('posts/delete', [Posts::class, 'delete'], ['as' => 'posts.delete', 'filter' => 'authorize:post.delete']);
     $routes->get('posts/edit/(:segment)', [Posts::class, 'edit'], ['as' => 'posts.edit', 'filter' => 'authorize:post.edit']);
     $routes->post('posts/edit', [Posts::class, 'update'], ['as' => 'posts.update', 'filter' => 'authorize:post.edit']);
     $routes->get('posts/show/(:segment)', [Posts::class, 'show'], ['filter' => 'authorize:post.view']);
+
+    //comments
+    $routes->get('comments/new/(:segment)/(:segment)', [Comments::class, 'new'], ['as' => 'comments.new', 'filter' => 'authorize:comment.add']);
+    $routes->post('comments/new', [Comments::class, 'create'], ['as' => 'comments.create', 'filter' => 'authorize:comment.add']);
+    $routes->post('comments/delete', [Comments::class, 'delete'], ['as' => 'comments.delete', 'filter' => 'authorize:comment.delete']);
+
+
+
 
     //
 });

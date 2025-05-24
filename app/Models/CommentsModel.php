@@ -27,10 +27,10 @@ class CommentsModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $updatedField  = '';
     protected $deletedField  = 'deleted_at';
 
     // Validation
@@ -43,10 +43,16 @@ class CommentsModel extends Model
     protected $allowCallbacks = true;
     protected $beforeInsert   = [];
     protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
+    protected $beforeUpdate   = ['updateDate'];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    protected function updateDate(array $data)
+    {
+        $data['data']['updated_at'] = date('Y-m-d H:i:s');
+        return $data;
+    }
 }

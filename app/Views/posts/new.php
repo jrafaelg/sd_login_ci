@@ -12,7 +12,7 @@
                 <p class="text-secondary">Please fill this form and submit to add post record.</p>
             </div>
 
-            <form action="<?= url_to('Posts::new') ?>" method="post">
+            <form action="<?= url_to('Posts::create') ?>" method="post">
                 <?= csrf_field() ?>
 
                 <div class="row gy-2 overflow-hidden">
