@@ -3,7 +3,7 @@
 ## O que é este projeto
 Proposta de um aplicativo de blog para o Projeto Integrador do 3º período do Curso de Técnico em Informática do Instituto Federal de São José do Rio Preto/SP
 
-Trata-se de um blog simples, com editor richtext para as postagens, com sistema de permissões, roles, assinatura digital para as postagens, 2FA, e códigos de recuperação.
+Trata-se de um blog simples, com editor richtext, sistema de permissões, roles, assinatura digital nas postagens, 2FA, e códigos de recuperação.
 
 Também possui rotas protegidas e comentários nas postagens.
 
