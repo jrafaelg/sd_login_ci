@@ -46,7 +46,8 @@ class Comments extends BaseController
         $data = [
             'title' => 'New comment',
             'object' => $params[0] ?? null,
-            'object_id' => $params[1] ?? null,
+            'object_id' => isset($params[1]) ? (int)$params[1] : null,
+            'parent_id' => isset($params[2]) ? (int)$params[2] : null,
         ];
 
         return view('comments/new', $data);
@@ -68,6 +69,7 @@ class Comments extends BaseController
                 'comment'       => 'required|max_length[10000]|min_length[10]',
                 'object'        => 'required',
                 'object_id'     => 'required|is_natural_no_zero',
+                'parent_id'     => 'required|is_natural',
             ],
             [
                 'comment'           => [
@@ -80,7 +82,11 @@ class Comments extends BaseController
                 ],
                 'object_id'       => [
                     'required'    => 'Error!',
-                    'max_length'  => 'Error!',
+                    'is_natural_no_zero'  => 'Error!',
+                ],
+                'object_id'       => [
+                    'required'    => 'Error!',
+                    'is_natural'  => 'Error!',
                 ],
             ]
         );
@@ -90,11 +96,13 @@ class Comments extends BaseController
             return redirect()->back()->with('errors', $this->validator->getErrors())->withInput();
         }
 
-        // instanciando a classe 
+        // instanciando a classe
         $comment = new \App\Entities\CommentsEntity($data);
 
         // inserindo o código do usuário logado nos dados do post
         $comment->user_id = service('auth')->getUser()['id'];
+
+        $comment->parent_id = !empty((int)$data['parent_id']) ? $data['parent_id'] : NULL;
 
         // instanciando o model
         $commentsModel = new CommentsModel();

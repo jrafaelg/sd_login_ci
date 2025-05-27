@@ -403,6 +403,7 @@ class Posts extends BaseController
                 ->join('users', 'users.id = comments.user_id')
                 ->where('object', 'posts')
                 ->where('object_id', $post->id)
+                ->where('parent_id', NULL)
                 ->orderBy('created_at', 'DESC')
                 ->findAll();
 
@@ -412,6 +413,22 @@ class Posts extends BaseController
             // setando a variável para o objeto de comentários
             $data['comments_object'] = 'posts';
             $data['comments_object_id'] = $post->id;
+
+            // instanciando o model
+            $replies = model('CommentsModel')
+                ->select('comments.*, users.username')
+                ->join('users', 'users.id = comments.user_id')
+                ->where('object', 'posts')
+                ->where('object_id', $post->id)
+                ->where('parent_id IS NOT NULL', NULL)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+
+            $data['replies'] = $replies ?? [];
+
+
+
+
 
             return view('posts/show', $data);
         } catch (\Exception $e) {
@@ -426,6 +443,8 @@ class Posts extends BaseController
 
             // Log the error message
             log_message('error', 'ID: {id} - username: {username} - IP: {ip_address} - Failed to retrieve post: {error}', $log_data);
+
+            dd($e->getTrace());
 
             return redirect()->back()->with('error', 'Failed to retrieve post. Try again.')->withInput();
         }
