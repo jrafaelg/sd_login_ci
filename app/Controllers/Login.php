@@ -329,7 +329,7 @@ class Login extends BaseController
 
         session()->push('user', ['otp_verified' => 1]);
 
-        return redirect()->route('employees.index');
+        return redirect()->route('post.index');
     }
 
     public function logout()

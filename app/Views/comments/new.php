@@ -16,6 +16,7 @@
 
                 <input type="hidden" name="object" id="object" value="<?= $object ?? 0; ?>">
                 <input type="hidden" name="object_id" id="object_id" value="<?= $object_id ?? 0; ?>">
+                <input type="hidden" name="parent_id" id="parent_id" value="<?= $parent_id ?? 0; ?>">
 
                 <div class="row gy-2 overflow-hidden">
 

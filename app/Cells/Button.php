@@ -25,7 +25,6 @@ class Button
 
         $target = $controller . '::' . $method;
 
-        //$url = url_to($target, $id);
         $url = url_to($target);
         $label = $param['title'] ?? 'Delete';
         $class = 'btn btn-danger';
@@ -33,7 +32,7 @@ class Button
 
         $html = <<<HTML
             <!-- <a href="$url" class="ci-fa-link link-danger-delete" data-bs-toggle="modal" data-bs-target="#deleteModal"> -->
-            <a href="$url" class="ci-fa-link link-danger-delete" id="$id">        
+            <a href="$url" class="ci-fa-link link-danger-delete" id="$id">
                 <span class="align-items-center" title="$label">
                     <i class="fa-regular fa-trash-can fs-5 ms-2"></i>
                 </span>
@@ -73,7 +72,7 @@ class Button
 
         if (isset($param['button']) && $param['button'] == true) {
             $html = <<<HTML
-            <a href="$url" class="btn btn-primary" style="min-width: 100px;">$label</a>                
+            <a href="$url" class="btn btn-primary" style="min-width: 100px;">$label</a>
             HTML;
         }
 
@@ -97,6 +96,32 @@ class Button
         <a href="$url" class="ci-fa-link">
             <span class="align-items-center" title="$label">
                 <i class="fa-regular fa-eye fs-5 ms-2"></i>
+            </span>
+        </a>
+        HTML;
+
+        return $html;
+    }
+
+    public function reply(array $param)
+    {
+
+        $controller = ucfirst($param['controller']) ?? '';
+        $method = $param['method'] ?? 'new';
+        $object = $param['object'] ?? 1;
+        $object_id = $param['object_id'] ?? 1;
+        $id = $param['id'] ?? 0;
+
+        $target = $controller . '::' . $method;
+
+        $url = url_to($target, $object, $object_id, $id);
+        $label = $param['title'] ?? 'Details';
+
+
+        $html = <<<HTML
+        <a href="$url" class="ci-fa-link">
+            <span class="align-items-center" title="$label">
+                <i class="fa-solid fa-reply"></i>
             </span>
         </a>
         HTML;

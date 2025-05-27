@@ -21,12 +21,49 @@
                         <p class="card-text"><?= esc($comment->comment, 'raw'); ?></p>
 
 
-                        <?php if (can('comment.delete')): ?>
+                        <?php if (can('comment.delete') || can('comment.add')): ?>
                             <div class="post-menu text-end">
-                                <?= view_cell('Button::del', ['id' => $comment->id, 'title' => 'Delete comment', 'controller' => 'comments', 'method' => 'delete']) ?>
-                                <?= view_cell('Form::del', ['id' => $comment->id, 'title' => 'Delete comment', 'controller' => 'comments', 'method' => 'delete']) ?>
+                                <?php if (can('comment.add')): ?>
+                                    <?= view_cell('Button::reply', ['id' => $comment->id, 'object' => $comments_object, 'object_id' => $comments_object_id, 'title' => 'Reply comment', 'controller' => 'comments', 'method' => 'new']) ?>
+                                <?php endif ?>
+
+                                <?php if (can('comment.delete')): ?>
+                                    <?= view_cell('Button::del', ['id' => $comment->id, 'title' => 'Delete comment', 'controller' => 'comments', 'method' => 'delete']) ?>
+                                    <?= view_cell('Form::del', ['id' => $comment->id, 'title' => 'Delete comment', 'controller' => 'comments', 'method' => 'delete']) ?>
+                                <?php endif ?>
                             </div>
                         <?php endif ?>
+
+
+
+                        <?php
+                        foreach ($replies as $reply) :
+                            if ($reply->parent_id !== $comment->id) {
+                                continue;
+                            }
+                        ?>
+
+                            <div class="card mb-3 mt-3">
+                                <div class="card-body">
+                                    <h5 class="card-title text-secondary">
+                                        <i class="fa-solid fa-at me-1 align-middle"></i><?= esc($reply->username) ?>
+                                        <?= esc($reply->created_at->format(DATE_TIME_BR_FORMAT)); ?>
+                                    </h5>
+
+                                    <p class="card-text"><?= esc($reply->comment, 'raw'); ?></p>
+
+                                    <?php if (can('comment.delete')): ?>
+                                        <div class="post-menu text-end">
+                                            <?= view_cell('Button::del', ['id' => $reply->id, 'title' => 'Delete reply', 'controller' => 'comments', 'method' => 'delete']) ?>
+                                            <?= view_cell('Form::del', ['id' => $reply->id, 'title' => 'Delete reply', 'controller' => 'comments', 'method' => 'delete']) ?>
+                                        </div>
+                                    <?php endif ?>
+
+                                </div>
+                            </div>
+
+                        <?php endforeach; ?>
+
                     </div>
                 </div>
             <?php endforeach; ?>

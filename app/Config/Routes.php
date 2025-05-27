@@ -59,6 +59,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
 
     //comments
     $routes->get('comments/new/(:segment)/(:segment)', [Comments::class, 'new'], ['as' => 'comments.new', 'filter' => 'authorize:comment.add']);
+    $routes->get('comments/new/(:segment)/(:segment)/(:segment)', [Comments::class, 'new'], ['as' => 'comments.reply', 'filter' => 'authorize:comment.add']);
     $routes->post('comments/new', [Comments::class, 'create'], ['as' => 'comments.create', 'filter' => 'authorize:comment.add']);
     $routes->post('comments/delete', [Comments::class, 'delete'], ['as' => 'comments.delete', 'filter' => 'authorize:comment.delete']);
 

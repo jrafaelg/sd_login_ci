@@ -9,9 +9,21 @@ services:
     networks:
       - dockernet
 
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: 123456
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
 networks:
     dockernet:
-      
+
   # redis:
   #   image: redis:alpine
   #   command: ["redis-server", "--bind", "redis", "--port", "6379"]
