@@ -22,7 +22,7 @@
 <?php endif ?>
 
 <?php if (session()->has('errors')) : ?>
-    <div class="position-fixed top-0 end-0 p-3 pt-4 mt-5 dismissible">
+    <div class="position-fixed top-0 end-0 p-3 pt-4 mt-5 w-25 dismissible">
         <div class="">
             <div class="alert alert-danger alert-dismissible fade show small" role="alert">
                 <?= validation_list_errors() ?>
@@ -33,7 +33,7 @@
 <?php endif ?>
 
 <?php if (session()->has('error')) : ?>
-    <div class="position-fixed top-0 end-0 p-3 pt-4 mt-5 dismissible">
+    <div class="position-fixed top-0 end-0 p-3 pt-4 mt-5 w-25 dismissible">
         <div class="">
             <div class="alert alert-danger alert-dismissible fade show small text-center" role="alert">
                 <?= session()->getFlashdata('error') ?>
@@ -44,7 +44,7 @@
 <?php endif ?>
 
 <?php if (session()->has('success')) : ?>
-    <div class="position-fixed top-5 end-0 p-3 pt-4 mt-5 dismissible">
+    <div class="position-fixed top-5 end-0 p-3 pt-4 mt-5 w-25 dismissible">
         <div class="">
             <div class="alert alert-success alert-dismissible fade show small text-center" role="alert">
                 <?= session()->getFlashdata('success') ?>

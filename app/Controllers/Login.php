@@ -62,6 +62,7 @@ class Login extends BaseController
                     'required' => 'Password é requerido',
                     //'PasswordStrengthValidator'  => 'PasswordStrengthValidator',
                     //'PasswordStrengthValidator'  => 'Password deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
+                    'PasswordIsValid'  => 'Password deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial',
                 ],
                 'password_confirm' => [
                     'required' => 'Confirmação de password é requerido',
@@ -80,6 +81,7 @@ class Login extends BaseController
 
         if (!$validated) {
             //return redirect()->back()->withInput();
+            //dd($this->validator->getErrors());
             return redirect()->route('login/register')->with('errors', $this->validator->getErrors())->withInput();
         }
 
