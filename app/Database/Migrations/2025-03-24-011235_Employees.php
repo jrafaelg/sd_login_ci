@@ -62,7 +62,7 @@ class Employees extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addPrimaryKey('id', true);
+        $this->forge->addPrimaryKey('id');
         $this->forge->createTable($this->tableName, true);
     }
 

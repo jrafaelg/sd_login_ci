@@ -19,10 +19,12 @@ class PermissionRole extends Migration
             ],
             'permission_id' => [
                 'type'       => 'INT',
+                'unsigned'   => true,
                 'null'       => false,
             ],
             'role_id' => [
                 'type'       => 'INT',
+                'unsigned'   => true,
                 'null'       => false,
             ],
             'created_at' => [
@@ -39,7 +41,7 @@ class PermissionRole extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addPrimaryKey('id', true);
+        $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('permission_id', 'permissions', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('role_id', 'roles', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable($this->tableName, true);

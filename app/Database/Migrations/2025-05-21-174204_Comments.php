@@ -44,9 +44,9 @@ class Comments extends Migration
                 'null' => true
             ],
             'user_id' => [
-                'type' => 'INT',
+                'type'     => 'INT',
                 'unsigned' => true,
-                'null' => false
+                'null'     => false
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -63,9 +63,8 @@ class Comments extends Migration
             ],
         ]);
 
-        $this->forge->addPrimaryKey('id', true);
+        $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addKey('title');
         $this->forge->addKey('object');
         $this->forge->addKey('object_id');
         $this->forge->addKey('parent_id');

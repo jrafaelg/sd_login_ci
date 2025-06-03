@@ -19,10 +19,12 @@ class RoleUser extends Migration
             ],
             'role_id' => [
                 'type'       => 'INT',
+                'unsigned'   => true,
                 'null'       => false,
             ],
             'user_id' => [
                 'type'       => 'INT',
+                'unsigned'   => true,
                 'null'       => false,
             ],
             'created_at' => [
@@ -40,7 +42,7 @@ class RoleUser extends Migration
             ],
         ]);
 
-        $this->forge->addPrimaryKey('id', true);
+        $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('role_id', 'roles', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable($this->tableName, true);

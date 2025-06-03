@@ -29,8 +29,9 @@ class Posts extends Migration
                 'null' => false,
             ],
             'user_id' => [
-                'type' => 'INT',
-                'null' => false
+                'type'      => 'INT',
+                'unsigned'  => true,
+                'null'      => false
             ],
             'digital_sign' => [
                 'type' => 'TEXT',
@@ -55,7 +56,7 @@ class Posts extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addPrimaryKey('id', true);
+        $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addKey('title');
         $this->forge->createTable($this->tableName, true);

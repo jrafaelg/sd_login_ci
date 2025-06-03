@@ -48,7 +48,8 @@ class CommentsSeeder extends Seeder
             "object" => 'posts',
             "object_id" => random_int(1, 100),
             "user_id" => random_int(1, 9),
-            "created_at" => $fakerObject->dateTime('now')->format('Y-m-d H:i:s'),
+            //"created_at" => $fakerObject->dateTime('now')->format('Y-m-d H:i:s'),
+            "created_at" => $fakerObject->dateTimeBetween('-2 years')->format('Y-m-d H:i:s'),
         );
     }
 }

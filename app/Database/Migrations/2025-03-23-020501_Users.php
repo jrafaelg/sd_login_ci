@@ -57,7 +57,7 @@ class Users extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addPrimaryKey('id', true);
+        $this->forge->addPrimaryKey('id', 'pk_users');
         $this->forge->createTable($this->tableName, true);
     }
 

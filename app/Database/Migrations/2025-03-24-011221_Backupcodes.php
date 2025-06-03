@@ -37,12 +37,11 @@ class Backupcodes extends Migration
             ],
             'used' => [
                 'type' => 'BOOLEAN',
-                'constraint' => 1,
                 'null' => true,
                 'default' => 0,
             ],
         ]);
-        $this->forge->addPrimaryKey('id', true);
+        $this->forge->addPrimaryKey('id');
         $this->forge->createTable($this->tableName, true);
     }
 
