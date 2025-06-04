@@ -9,9 +9,10 @@ class RolesSeeder extends Seeder
     public function run()
     {
         $keys = [
-            "admin"=>"admin",
-            "writer"=>"writer",
-            "editor"=>"editor",
+            "admin" => "admin",
+            "writer" => "writer",
+            "editor" => "editor",
+            "reader" => "reader",
         ];
 
         $data = [];
