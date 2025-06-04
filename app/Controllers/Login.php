@@ -8,6 +8,7 @@ use App\Models\PermissionModel;
 use App\Models\RoleModel;
 use App\Models\UserModel;
 use App\Libraries\Cipher;
+use App\Models\RoleUserModel;
 use chillerlan\QRCode\QRCode;
 use phpseclib3\Crypt\RSA;
 use PragmaRX\Google2FA\Google2FA;
@@ -116,6 +117,21 @@ class Login extends BaseController
 
         // setando o id do usuário na session para utilizar na próxima página
         session()->set('userId', $user->getInsertID());
+
+        $roleModel = new RoleModel();
+        $role = $roleModel->where('key', 'reader')->first();
+
+        if (!$role) {
+            return redirect()->route('login/register')->with('error', 'Ocorreu um erro ao criar o usuário');
+        }
+
+        $roleUserModel = new RoleUserModel();
+        $roleUserModel->set([
+            'role_id' => $role['id'],
+            'user_id' => $user->getInsertID(),
+        ]);
+
+        $roleUserModel->insert();
 
         //dd($user);
 

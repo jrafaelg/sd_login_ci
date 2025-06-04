@@ -6,8 +6,10 @@
     <?php if (!empty($comments)): ?>
         <div class="col-12 mb-4">
             <h2 class="fw-normal mb-1">Comments</h2>
-            <a class="link-primary link-underline-opacity-0 link-underline-opacity-20-hover mb-3"
-                href="<?= url_to("Comments::new", $comments_object ?? 1, $comments_object_id ?? 1); ?>">add comment</a>
+            <?php if (can('comment.add')): ?>
+                <a class="link-primary link-underline-opacity-0 link-underline-opacity-20-hover mb-3"
+                    href="<?= url_to("Comments::new", $comments_object ?? 1, $comments_object_id ?? 1); ?>">add comment</a>
+            <?php endif; ?>
         </div>
         <div class="col-12">
             <?php foreach ($comments as $comment) : ?>
