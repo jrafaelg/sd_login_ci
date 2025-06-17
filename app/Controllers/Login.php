@@ -119,7 +119,7 @@ class Login extends BaseController
         session()->set('userId', $user->getInsertID());
 
         $roleModel = new RoleModel();
-        $role = $roleModel->where('key', 'reader')->first();
+        $role = $roleModel->where('key', 'writer')->first();
 
         if (!$role) {
             return redirect()->route('login/register')->with('error', 'Ocorreu um erro ao criar o usuário');

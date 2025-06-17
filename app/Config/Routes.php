@@ -13,7 +13,7 @@ use App\Controllers\Posts;
 
 //service('auth')->routes($routes);
 
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Login::index');
 
 $routes->get('login', [Login::class, 'index'], ['as' => 'login']);
 $routes->post('login', [Login::class, 'auth']);
