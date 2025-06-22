@@ -33,19 +33,19 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('login/changepassword', [Login::class, 'changePassword'], ['as' => 'login.changepassword']);
     $routes->post('login/changepassword', [Login::class, 'updatePassword'], ['as' => 'login.changepassword']);
 
-    $routes->get('news', [News::class, 'index'], ['as' => 'news']);
-    $routes->get('news/new', [News::class, 'new']);
-    $routes->post('news', [News::class, 'create']);
-    $routes->get('news/(:segment)', [News::class, 'show']);
+    // $routes->get('news', [News::class, 'index'], ['as' => 'news']);
+    // $routes->get('news/new', [News::class, 'new']);
+    // $routes->post('news', [News::class, 'create']);
+    // $routes->get('news/(:segment)', [News::class, 'show']);
 
-    //employees
-    $routes->get('employees', [Employees::class, 'index'], ['as' => 'employees.index']);
-    $routes->get('employees/show/(:segment)', [Employees::class, 'show'], ['filter' => 'authorize:employee.view']);
-    $routes->get('employees/edit/(:segment)', [Employees::class, 'edit'], ['filter' => 'authorize:employee.edit']);
-    $routes->post('employees/edit', [Employees::class, 'update'], ['as' => 'employees.update', 'filter' => 'authorize:employee.edit']);
-    $routes->post('employees/delete', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
-    $routes->get('employees/new', [Employees::class, 'new']);
-    $routes->post('employees/new', [Employees::class, 'create']);
+    // //employees
+    // $routes->get('employees', [Employees::class, 'index'], ['as' => 'employees.index']);
+    // $routes->get('employees/show/(:segment)', [Employees::class, 'show'], ['filter' => 'authorize:employee.view']);
+    // $routes->get('employees/edit/(:segment)', [Employees::class, 'edit'], ['filter' => 'authorize:employee.edit']);
+    // $routes->post('employees/edit', [Employees::class, 'update'], ['as' => 'employees.update', 'filter' => 'authorize:employee.edit']);
+    // $routes->post('employees/delete', [Employees::class, 'delete'], ['filter' => 'authorize:employee.delete']);
+    // $routes->get('employees/new', [Employees::class, 'new']);
+    // $routes->post('employees/new', [Employees::class, 'create']);
 
     //posts
     $routes->get('posts', [Posts::class, 'index'], ['as' => 'posts.index', 'filter' => 'authorize:post.view']);
