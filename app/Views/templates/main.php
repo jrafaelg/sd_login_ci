@@ -6,7 +6,7 @@
 //dd(session()->getFlashdata('errors'));
 ?>
 
-<?= $this->extend('templates\header') ?>
+<?= $this->extend('templates' . DIRECTORY_SEPARATOR . 'header') ?>
 
 <?= $this->section('main') ?>
 
@@ -75,7 +75,7 @@
 <?php endif ?>
 
 <?php if (service('auth')->isCompleteLoging()): ?>
-    <?= $this->render('components\navbar') ?: 'Fallback title'  ?>
+    <?= $this->render('components' . DIRECTORY_SEPARATOR . 'navbar') ?: 'Fallback title'  ?>
 <?php endif ?>
 
 <!-- contend -->

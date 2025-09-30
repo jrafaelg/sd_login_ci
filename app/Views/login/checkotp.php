@@ -1,4 +1,4 @@
-<?= $this->extend('templates\main') ?>
+<?= $this->extend('templates' . DIRECTORY_SEPARATOR . 'main') ?>
 
 
 <?= $this->section('content') ?>

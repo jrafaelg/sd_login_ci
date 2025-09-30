@@ -1,4 +1,4 @@
-<?= $this->extend('templates\main') ?>
+<?= $this->extend('templates' . DIRECTORY_SEPARATOR . 'main') ?>
 
 <?= $this->section('content') ?>
 
@@ -54,7 +54,7 @@
                 <?php endif ?>
             </div>
 
-            <?= $this->render('comments\listbyobject') ?>
+            <?= $this->render('comments' . DIRECTORY_SEPARATOR . 'listbyobject') ?>
 
 
 

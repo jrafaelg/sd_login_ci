@@ -30,7 +30,7 @@
     <!-- /main -->
 
     <!-- footer -->
-    <?= $this->render('templates\footer') ?: 'Fallback title'  ?>
+    <?= $this->render('templates' . DIRECTORY_SEPARATOR . 'footer') ?: 'Fallback title'  ?>
     <!-- /footer -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
